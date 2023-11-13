@@ -25,5 +25,11 @@ export class HeaderComponent implements OnInit {
     const newTheme = this.isDarkTheme ? 'business' : 'cupcake';
     document.body.setAttribute('data-theme', newTheme);
     localStorage.setItem('theme', newTheme);
+
+    if (this.isDarkTheme) {
+      document.body.classList.add('dark');
+    } else {
+      document.body.classList.remove('dark');
+    }
   }
 }

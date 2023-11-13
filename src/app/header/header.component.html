@@ -8,14 +8,22 @@
       <input
         type="text"
         placeholder="meklēt..."
-        class="border p-2 rounded-xl w-full"
+        class="input input-bordered input-secondary p-2 rounded-xl w-full"
       />
-      <button type="submit" class="btn bg-accent text-white p-2 rounded-xl">
-        Search
+      <button type="submit" class="btn btn-accent p-2 rounded-xl">
+        <img
+          src="/assets/images/search.svg"
+          [class]="
+            isDarkTheme
+              ? 'w-10 h-10 -translate-y-1 '
+              : 'w-10 h-10 -translate-y-1 invert'
+          "
+          alt="Search"
+        />
       </button>
     </div>
     <!-- Additional Links or Icons -->
-    <label class="swap swap-rotate">
+    <label class="swap swap-rotate pl-8">
       <!-- this hidden checkbox controls the state -->
       <input type="checkbox" [checked]="isDarkTheme" (change)="toggleTheme()" />
 

@@ -5,5 +5,14 @@ export const content = [
 export const theme = {
   extend: {},
 };
-export const plugins = [require("daisyui")];
+export const plugins = [
+  require('daisyui'),
+];
+export const daisyui = {
+  themes: [
+    'cupcake',
+    'business',
+  ],
+  darkTheme:"business",
+};
 

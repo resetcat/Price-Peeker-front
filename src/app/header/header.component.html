@@ -2,15 +2,15 @@
   <!-- Container to align items next to each other -->
   <div class="container mx-auto flex items-center justify-between p-4">
     <!-- Logo -->
-    <a class="navbar-brand text-xl font-bold" href="/">Price peeker</a>
+    <img class="navbar-brand text-xl font-bold" src="/assets/images/logo.svg" />
     <!-- Search Bar -->
-    <div class="search-container flex min-w-fit gap-1">
+    <div class="search-container flex flex-row w-full md:w-2/3 lg:w-1/2 gap-1">
       <input
         type="text"
         placeholder="meklēt..."
-        class="border p-2 rounded-xl"
+        class="border p-2 rounded-xl w-full"
       />
-      <button type="submit" class="btn bg-blue-500 text-white p-2 rounded-xl">
+      <button type="submit" class="btn bg-accent text-white p-2 rounded-xl">
         Search
       </button>
     </div>

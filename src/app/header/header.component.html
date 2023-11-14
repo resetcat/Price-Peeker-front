@@ -10,7 +10,11 @@
         placeholder="meklēt..."
         class="input input-bordered input-secondary p-2 rounded-xl w-full"
       />
-      <button type="submit" class="btn btn-accent p-2 rounded-xl">
+      <button
+        type="submit"
+        (click)="getProducts()"
+        class="btn btn-accent p-2 rounded-xl"
+      >
         <img
           src="/assets/images/search.svg"
           [class]="

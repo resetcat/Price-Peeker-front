@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ProductsService } from '../services/products.service';
 
 @Component({
   selector: 'app-header',
@@ -8,10 +9,14 @@ import { Component, OnInit } from '@angular/core';
 export class HeaderComponent implements OnInit {
   isDarkTheme: boolean = false;
 
-  constructor() {}
+  constructor(private productService: ProductsService) {}
 
   ngOnInit(): void {
     this.initializeTheme();
+  }
+
+  getProducts() {
+    this.productService.getProducts();
   }
 
   initializeTheme() {

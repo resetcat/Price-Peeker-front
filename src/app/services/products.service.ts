@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { SearchDto } from '../models/search.dto';
 
 @Injectable({
   providedIn: 'root',
@@ -7,9 +8,12 @@ import { HttpClient } from '@angular/common/http';
 export class ProductsService {
   constructor(private httpclient: HttpClient) {}
 
-  getProducts() {
+  getProducts(query: string) {
+    const body: SearchDto = {
+      query: query,
+    };
     this.httpclient
-      .get('http://localhost:3080', { responseType: 'text' })
+      .post('http://localhost:3080/grocery', body)
       .subscribe((v) => console.info(v));
   }
 }

@@ -8,6 +8,7 @@ import { ProductsService } from '../services/products.service';
 })
 export class HeaderComponent implements OnInit {
   isDarkTheme: boolean = false;
+  searchQuery: string = '';
 
   constructor(private productService: ProductsService) {}
 
@@ -15,8 +16,8 @@ export class HeaderComponent implements OnInit {
     this.initializeTheme();
   }
 
-  getProducts() {
-    this.productService.getProducts();
+  getProducts(query: string) {
+    this.productService.getProducts(query);
   }
 
   initializeTheme() {

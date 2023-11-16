@@ -6,13 +6,16 @@
     <!-- Search Bar -->
     <div class="search-container flex flex-row w-full md:w-2/3 lg:w-1/2 gap-1">
       <input
+        #searchInput
         type="text"
         placeholder="meklēt..."
         class="input input-bordered input-secondary p-2 rounded-xl w-full"
+        [(ngModel)]="searchQuery"
+        (keyup.enter)="getProducts(searchQuery); searchInput.blur()"
       />
       <button
         type="submit"
-        (click)="getProducts()"
+        (click)="getProducts(searchQuery)"
         class="btn btn-accent p-2 rounded-xl"
       >
         <img

@@ -10,7 +10,7 @@
       >
         <img src="{{ product.imgURL }}" alt="{{ product.name }}" />
       </figure>
-      <div class="card-body">
+      <div class="card-body flex flex-col justify-between">
         <div
           [class]="
             product.id === 1
@@ -35,12 +35,28 @@
           {{ product.discount }} atlaide
         </div>
 
+        <!-- Card Owner Badge -->
+        <div class="card-actions mt-1">
+          <div
+            *ngIf="product.cardOwnerOnly"
+            [class]="
+              product.id === 1
+                ? 'badge badge-outline bg-R-shop'
+                : 'badge badge-outline bg-M-shop'
+            "
+          >
+            <p class="text-[10px] text-white md:text-sm">
+              Tikai ar {{ product.id === 1 ? "R" : "M" }}-karti
+            </p>
+          </div>
+        </div>
+
         <!-- Prices and Price Per Unit -->
         <div class="flex flex-col">
           <div class="flex flex-row items-baseline">
             <!-- Original Price -->
             <span
-              class="text-xs font-semibold line-through md:text-sm"
+              class="text-xs font-semibold line-through decoration-R-shop decoration-2 md:text-sm"
               *ngIf="product.discountedPrice"
             >
               {{ product.originalPrice }}€
@@ -65,22 +81,6 @@
             <span class="text-xs text-gray-400 md:text-sm">
               {{ product.pricePerUnit }}
             </span>
-          </div>
-
-          <!-- Card Owner Badge -->
-          <div class="card-actions mt-2 justify-end">
-            <div
-              *ngIf="product.cardOwnerOnly"
-              [class]="
-                product.id === 1
-                  ? 'badge badge-outline bg-R-shop'
-                  : 'badge badge-outline bg-M-shop'
-              "
-            >
-              <p class="text-[10px] text-white md:text-sm">
-                Tikai ar {{ product.id === 1 ? "R" : "M" }}-karti
-              </p>
-            </div>
           </div>
         </div>
       </div>

@@ -12,11 +12,13 @@
         class="input input-bordered input-secondary p-2 rounded-xl w-full"
         [(ngModel)]="searchQuery"
         (keyup.enter)="getProducts(searchQuery); searchInput.blur()"
+        [disabled]="(loading$ | async)!"
       />
       <button
         type="submit"
         (click)="getProducts(searchQuery)"
-        class="btn btn-accent p-2 rounded-xl"
+        class="btn btn-accent p-2 rounded-xl disabled:btn-neutral"
+        [disabled]="loading$ | async"
       >
         <img
           src="/assets/images/search.svg"

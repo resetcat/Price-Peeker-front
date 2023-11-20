@@ -73,12 +73,13 @@ export class ProductsComponent implements OnInit {
       cardOwnerOnly: false,
     },
   ];
+  loading$ = this.productService.loading.asObservable();
 
   constructor(private productService: ProductsService) {}
 
   ngOnInit(): void {
-    // this.productService.products$.subscribe((data) => {
-    //   this.products = data;
-    // });
+    this.productService.products$.subscribe((data) => {
+      this.products = data;
+    });
   }
 }

@@ -9,6 +9,7 @@ import { ProductsService } from '../services/products.service';
 export class HeaderComponent implements OnInit {
   isDarkTheme: boolean = false;
   searchQuery: string = '';
+  loading$ = this.productService.loading.asObservable();
 
   constructor(private productService: ProductsService) {}
 

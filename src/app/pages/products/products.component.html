@@ -1,6 +1,16 @@
 <!-- products.component.html -->
 <div class="w-full h-full flex flex-col items-center justify-center">
-  <div class="flex flex-row flex-wrap justify-center">
+  <div
+    *ngIf="loading$ | async"
+    class="fixed inset-0 flex items-center justify-center"
+  >
+    <!-- loading spinner -->
+    <span class="spinner loading loading-spinner text-primary"></span>
+  </div>
+  <div
+    *ngIf="!(loading$ | async)"
+    class="flex flex-row flex-wrap justify-center"
+  >
     <div
       *ngFor="let product of products"
       class="card w-40 md:w-56 bg-base-100 shadow-xl m-4"

@@ -3,7 +3,12 @@ export const content = [
   "./src/**/*.{html,ts}",
 ];
 export const theme = {
-  extend: {},
+  extend: {
+    colors: {
+      'R-shop': '#b70f15',
+      'M-shop': '#1b458f',
+    },
+  },
 };
 export const plugins = [
   require('daisyui'),

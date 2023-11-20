@@ -1,4 +1,27 @@
 <!-- products.component.html -->
-<div class="h-screen w-full flex items-center justify-center">
-  <p>products works!</p>
+<div class="w-full h-screen flex items-center justify-center">
+  <div
+    *ngFor="let product of products"
+    class="card w-96 bg-base-100 shadow-xl m-4"
+  >
+    <figure><img src="{{ product.imgURL }}" alt="{{ product.name }}" /></figure>
+    <div class="card-body">
+      <div>{{ product.id == 1 ? "Rimi" : "Maxima" }}</div>
+      <h2 class="card-title">
+        {{ product.name }}
+        <div *ngIf="product.discount" class="badge badge-secondary">SALE</div>
+      </h2>
+      <p>Price: {{ product.originalPrice }}</p>
+      <p *ngIf="product.discountedPrice">
+        Discounted Price: {{ product.discountedPrice | currency }}
+      </p>
+      <p>Price per Unit: {{ product.pricePerUnit }}</p>
+
+      <div class="card-actions justify-end">
+        <div *ngIf="product.cardOwnerOnly" class="badge badge-outline">
+          Card Owner Exclusive
+        </div>
+      </div>
+    </div>
+  </div>
 </div>

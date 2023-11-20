@@ -6,11 +6,12 @@ import { HeaderComponent } from './header/header.component';
 import { RouterModule, Routes } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
+import { ProductsComponent } from './pages/products/products.component';
 
-const routes: Routes = [{ path: '', redirectTo: '/', pathMatch: 'full' }];
+const routes: Routes = [{ path: '', component: ProductsComponent }];
 
 @NgModule({
-  declarations: [AppComponent, HeaderComponent],
+  declarations: [AppComponent, HeaderComponent, ProductsComponent],
   imports: [
     BrowserModule,
     HttpClientModule,

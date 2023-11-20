@@ -23,7 +23,13 @@
           </p>
         </div>
         <!-- Product Name -->
-        <h2 class="text-sm md:text-lg card-title">
+        <h2
+          [class]="
+            product.originalPrice
+              ? 'text-sm md:text-lg card-title'
+              : 'text-sm md:text-lg card-title line-through text-gray-400'
+          "
+        >
           {{ product.name }}
         </h2>
 
@@ -51,8 +57,11 @@
           </div>
         </div>
 
-        <!-- Prices and Price Per Unit -->
-        <div class="flex flex-col">
+        <!-- Prices and Price Per Unit or Out of Stock Message -->
+        <div
+          *ngIf="product.originalPrice; else outOfStock"
+          class="flex flex-col"
+        >
           <div class="flex flex-row items-baseline">
             <!-- Original Price -->
             <span
@@ -83,6 +92,12 @@
             </span>
           </div>
         </div>
+        <!-- Out of Stock Template -->
+        <ng-template #outOfStock>
+          <div class="text-center text-red-500 font-bold">
+            prece nav pieejama
+          </div>
+        </ng-template>
       </div>
     </div>
   </div>

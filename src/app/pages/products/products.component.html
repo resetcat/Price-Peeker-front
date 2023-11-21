@@ -7,6 +7,20 @@
     <!-- loading spinner -->
     <span class="spinner loading loading-spinner text-primary"></span>
   </div>
+  <div class="w-full flex justify-end p-4">
+    <!-- Container for the select-->
+    <select
+      class="select select-bordered max-w-xs"
+      (change)="sortProducts($event)"
+    >
+      <option value="default" disabled selected>Kārtot pēc:</option>
+      <option value="default">pēc noklusējuma</option>
+      <option value="priceAsc">zemākā cena vispirms</option>
+      <option value="priceDesc">augstākā cena vispirms</option>
+      <option value="discount">ar akcijām vispirms</option>
+    </select>
+  </div>
+
   <div
     *ngIf="!(loading$ | async)"
     class="flex flex-row flex-wrap justify-center"
@@ -18,7 +32,11 @@
       <figure
         class="h-40 w-40 md:h-56 md:w-56 flex items-center justify-center"
       >
-        <img src="{{ product.imgURL }}" alt="{{ product.name }}" />
+        <img
+          src="{{ product.imgURL }}"
+          alt="{{ product.name }}"
+          class="object-cover w-full h-full"
+        />
       </figure>
       <div class="card-body flex flex-col justify-between">
         <div

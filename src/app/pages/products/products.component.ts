@@ -73,6 +73,7 @@ export class ProductsComponent implements OnInit {
       cardOwnerOnly: false,
     },
   ];
+  defaultProducts: ProductDto[] = [];
   loading$ = this.productService.loading.asObservable();
 
   constructor(private productService: ProductsService) {}
@@ -80,6 +81,33 @@ export class ProductsComponent implements OnInit {
   ngOnInit(): void {
     this.productService.products$.subscribe((data) => {
       this.products = data;
+      this.defaultProducts = data;
     });
+  }
+
+  sortProducts(event: Event): void {
+    const selectElement = event.target as HTMLSelectElement;
+    const value = selectElement.value;
+
+    switch (value) {
+      case 'priceAsc':
+        this.products = [...this.products].sort(
+          (a, b) => a.originalPrice - b.originalPrice
+        );
+        break;
+      case 'priceDesc':
+        this.products = [...this.products].sort(
+          (a, b) => b.originalPrice - a.originalPrice
+        );
+        break;
+      case 'discount':
+        this.products = [...this.products].sort((a, b) =>
+          b.discount ? 1 : -1
+        );
+        break;
+      default:
+        this.products = [...this.defaultProducts]; // Create a new array
+        break;
+    }
   }
 }

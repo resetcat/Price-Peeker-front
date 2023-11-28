@@ -1,7 +1,7 @@
 ## build using :
 
-docker build -t price-peeker .
+docker build -t price-front .
 
 ## run using
 
-docker run -p 3080:3080 --cap-add=SYS_ADMIN price-peeker
+docker run -p 80:80 price-front

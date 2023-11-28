@@ -19,5 +19,4 @@ FROM nginx:alpine
 COPY --from=builder /app/dist/price-peeker-front /usr/share/nginx/html
 
 EXPOSE 80
-CMD ["ng","serve","--host","0.0.0.0"]
-
+CMD ["nginx", "-g", "daemon off;"]

@@ -79,10 +79,10 @@ export class ProductsComponent implements OnInit {
   constructor(private productService: ProductsService) {}
 
   ngOnInit(): void {
-    this.productService.products$.subscribe((data) => {
-      this.products = data;
-      this.defaultProducts = data;
-    });
+    // this.productService.products$.subscribe((data) => {
+    //   this.products = data;
+    //   this.defaultProducts = data;
+    // });
   }
 
   sortProducts(event: Event): void {
@@ -105,9 +105,28 @@ export class ProductsComponent implements OnInit {
           b.discount ? 1 : -1
         );
         break;
+      case 'pricePerUnitAsc':
+        this.products = [...this.products].sort(
+          (a, b) =>
+            this.extractNumber(a.pricePerUnit) -
+            this.extractNumber(b.pricePerUnit)
+        );
+        break;
+      case 'pricePerUnitDesc':
+        this.products = [...this.products].sort(
+          (a, b) =>
+            this.extractNumber(b.pricePerUnit) -
+            this.extractNumber(a.pricePerUnit)
+        );
+        break;
       default:
         this.products = [...this.defaultProducts]; // Create a new array
         break;
     }
+  }
+
+  extractNumber(priceStr: string) {
+    const match = priceStr.match(/(\d+(\.\d+)?)/);
+    return match ? parseFloat(match[0]) : 0;
   }
 }

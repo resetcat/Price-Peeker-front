@@ -79,10 +79,10 @@ export class ProductsComponent implements OnInit {
   constructor(private productService: ProductsService) {}
 
   ngOnInit(): void {
-    // this.productService.products$.subscribe((data) => {
-    //   this.products = data;
-    //   this.defaultProducts = data;
-    // });
+    this.productService.products$.subscribe((data) => {
+      this.products = data;
+      this.defaultProducts = data;
+    });
   }
 
   sortProducts(event: Event): void {
@@ -91,38 +91,44 @@ export class ProductsComponent implements OnInit {
 
     switch (value) {
       case 'priceAsc':
-        this.products = [...this.products].sort(
-          (a, b) => a.originalPrice - b.originalPrice
-        );
+        this.products = this.sortBy('originalPrice', true);
         break;
       case 'priceDesc':
-        this.products = [...this.products].sort(
-          (a, b) => b.originalPrice - a.originalPrice
-        );
+        this.products = this.sortBy('originalPrice', false);
         break;
       case 'discount':
-        this.products = [...this.products].sort((a, b) =>
-          b.discount ? 1 : -1
-        );
+        this.products = this.sortBy('discount', false);
         break;
       case 'pricePerUnitAsc':
-        this.products = [...this.products].sort(
-          (a, b) =>
-            this.extractNumber(a.pricePerUnit) -
-            this.extractNumber(b.pricePerUnit)
-        );
+        this.products = this.sortBy('pricePerUnit', true);
         break;
       case 'pricePerUnitDesc':
-        this.products = [...this.products].sort(
-          (a, b) =>
-            this.extractNumber(b.pricePerUnit) -
-            this.extractNumber(a.pricePerUnit)
-        );
+        this.products = this.sortBy('pricePerUnit', false);
         break;
       default:
-        this.products = [...this.defaultProducts]; // Create a new array
+        this.products = [...this.defaultProducts];
         break;
     }
+  }
+
+  sortBy(key: string, isAsc: boolean): any[] {
+    return [...this.products].sort((a: any, b: any) => {
+      const priority =
+        this.prioritizeFalsy(a[key]) - this.prioritizeFalsy(b[key]);
+
+      if (priority !== 0) return priority;
+
+      const aValue =
+        key === 'pricePerUnit' ? this.extractNumber(a[key]) : a[key];
+      const bValue =
+        key === 'pricePerUnit' ? this.extractNumber(b[key]) : b[key];
+
+      return isAsc ? aValue - bValue : bValue - aValue;
+    });
+  }
+
+  prioritizeFalsy(value: any): number {
+    return value ? 0 : 1;
   }
 
   extractNumber(priceStr: string) {

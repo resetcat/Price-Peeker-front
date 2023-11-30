@@ -29,7 +29,7 @@
   >
     <div
       *ngFor="let product of products"
-      class="card w-36 md:w-56 bg-base-100 shadow-xl m-4"
+      class="card w-[148px] md:w-56 bg-base-100 shadow-xl m-4"
     >
       <figure
         class="h-36 w-36 md:h-56 md:w-56 flex items-center justify-center"
@@ -66,7 +66,7 @@
         <!-- Discount Badge -->
         <div
           *ngIf="product.discount"
-          class="badge badge-secondary text-xs md:text-sm"
+          class="badge badge-secondary text-[12px] md:text-sm"
         >
           {{ product.discount }} atlaide
         </div>
@@ -81,7 +81,7 @@
                 : 'badge badge-outline bg-M-shop'
             "
           >
-            <p class="text-[10px] text-white md:text-sm">
+            <p class="text-[9.5px] text-white md:text-sm">
               Tikai ar {{ product.id === 1 ? "R" : "M" }}-karti
             </p>
           </div>

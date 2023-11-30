@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { ProductDto } from 'src/app/models/products.dto';
 import { ProductsService } from 'src/app/services/products.service';
 
@@ -75,6 +75,7 @@ export class ProductsComponent implements OnInit {
   ];
   defaultProducts: ProductDto[] = [];
   loading$ = this.productService.loading.asObservable();
+  @ViewChild('select') select!: ElementRef;
 
   constructor(private productService: ProductsService) {}
 
@@ -82,7 +83,13 @@ export class ProductsComponent implements OnInit {
     this.productService.products$.subscribe((data) => {
       this.products = data;
       this.defaultProducts = data;
+      this.resetSortOrder();
     });
+  }
+
+  resetSortOrder(): void {
+    const selectElement = this.select.nativeElement as HTMLSelectElement;
+    selectElement.value = 'default';
   }
 
   sortProducts(event: Event): void {

@@ -55,7 +55,7 @@
       />
       <button
         type="button"
-        class="btn btn-circle btn-ghost absolute right-[71px] top-18"
+        class="btn btn-circle btn-ghost absolute right-[78px] top-18"
         (click)="searchQuery = ''"
         [disabled]="loading$ | async"
       >
@@ -99,7 +99,9 @@
       <img class="w-40 h-auto" src="/assets/images/logo.svg" alt="Logo" />
     </a>
     <!-- Search Bar -->
-    <div class="search-container flex flex-row w-full md:w-2/3 lg:w-1/2 gap-1">
+    <div
+      class="relative flex flex-row items-center w-full md:w-2/3 lg:w-1/2 gap-1"
+    >
       <input
         #searchInput
         type="text"
@@ -109,6 +111,27 @@
         (keyup.enter)="getProducts(searchQuery); searchInput.blur()"
         [disabled]="(loading$ | async)!"
       />
+      <button
+        type="button"
+        class="btn btn-circle btn-ghost absolute right-[71px] top-18"
+        (click)="searchQuery = ''"
+        [disabled]="loading$ | async"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-5 w-5"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M6 18L18 6M6 6l12 12"
+          />
+        </svg>
+      </button>
       <button
         type="submit"
         (click)="getProducts(searchQuery)"

@@ -18,6 +18,8 @@ export class ProductsService {
   getProducts(query: string) {
     this.loading.next(true); // Start loading
     const body: SearchDto = { query: query };
+    console.log('trying to reach ' + environment.apiUrl);
+
     this.httpClient
       .post<ProductDto[]>(`${environment.apiUrl}/grocery`, body)
       .subscribe({

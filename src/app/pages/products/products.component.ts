@@ -88,8 +88,10 @@ export class ProductsComponent implements OnInit {
   }
 
   resetSortOrder(): void {
-    const selectElement = this.select.nativeElement as HTMLSelectElement;
-    selectElement.value = 'default';
+    if (this.select && this.select.nativeElement) {
+      const selectElement = this.select.nativeElement as HTMLSelectElement;
+      selectElement.value = 'default';
+    }
   }
 
   sortProducts(event: Event): void {

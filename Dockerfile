@@ -3,6 +3,9 @@ FROM node:17-alpine3.14 as builder
 
 WORKDIR /app
 
+# Set Node.js memory limit
+ENV NODE_OPTIONS=--max-old-space-size=1024
+
 # Install Angular CLI
 RUN npm install -g @angular/cli@15.0.3
 
@@ -12,7 +15,7 @@ RUN npm install
 
 # Copy source files and build the project
 COPY . .
-RUN node --max_old_space_size=1024 ./node_modules/@angular/cli/bin/ng build --prod
+RUN npm run build --prod
 
 # Stage 2: Serve the application using Nginx
 FROM nginx:alpine

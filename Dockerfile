@@ -12,7 +12,7 @@ RUN npm install
 
 # Copy source files and build the project
 COPY . .
-RUN npm run build --prod
+RUN node --max_old_space_size=8192 ./node_modules/@angular/cli/bin/ng build --prod
 
 # Stage 2: Serve the application using Nginx
 FROM nginx:alpine

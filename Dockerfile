@@ -3,8 +3,6 @@ FROM node:17-alpine3.14 as builder
 
 WORKDIR /app
 
-# Set Node.js memory limit
-ENV NODE_OPTIONS=--max-old-space-size=1024
 
 # Install Angular CLI
 RUN npm install -g @angular/cli@15.0.3

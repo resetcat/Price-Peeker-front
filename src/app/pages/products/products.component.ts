@@ -1,5 +1,6 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { ProductDto } from 'src/app/models/products.dto';
+import { SearchState } from 'src/app/models/search.dto';
 import { ProductsService } from 'src/app/services/products.service';
 
 @Component({
@@ -75,6 +76,8 @@ export class ProductsComponent implements OnInit {
   ];
   defaultProducts: ProductDto[] = [];
   loading$ = this.productService.loading.asObservable();
+  searchStates = SearchState;
+  searchState: SearchState | undefined;
   @ViewChild('select') select!: ElementRef;
 
   constructor(private productService: ProductsService) {}
@@ -84,6 +87,10 @@ export class ProductsComponent implements OnInit {
       this.products = data;
       this.defaultProducts = data;
       this.resetSortOrder();
+    });
+
+    this.productService.searchState$.subscribe((state) => {
+      this.searchState = state;
     });
   }
 

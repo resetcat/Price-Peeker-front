@@ -78,6 +78,7 @@ export class ProductsComponent implements OnInit {
   loading$ = this.productService.loading.asObservable();
   searchStates = SearchState;
   searchState: SearchState | undefined;
+  errorMessage: string | null = null;
   @ViewChild('select') select!: ElementRef;
 
   constructor(private productService: ProductsService) {}
@@ -91,6 +92,14 @@ export class ProductsComponent implements OnInit {
 
     this.productService.searchState$.subscribe((state) => {
       this.searchState = state;
+    });
+
+    this.productService.error$.subscribe((error) => {
+      if (error) {
+        this.errorMessage = error.statusText || 'An error occurred'; // Fallback message
+      } else {
+        this.errorMessage = null; // Reset the error message when there's no error
+      }
     });
   }
 

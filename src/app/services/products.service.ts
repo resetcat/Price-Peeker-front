@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { SearchDto, SearchState } from '../models/search.dto';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, catchError } from 'rxjs';
 import { ProductDto } from '../models/products.dto';
 import { environment } from 'src/environments/environment';
 
@@ -14,6 +14,8 @@ export class ProductsService {
   loading = new BehaviorSubject<boolean>(false);
   private searchState = new BehaviorSubject<SearchState>(SearchState.Initial);
   searchState$ = this.searchState.asObservable();
+  private errorSource = new BehaviorSubject<any>(null);
+  error$ = this.errorSource.asObservable();
 
   constructor(private httpClient: HttpClient) {}
 
@@ -30,11 +32,17 @@ export class ProductsService {
           this.searchState.next(
             data.length > 0 ? SearchState.Found : SearchState.NotFound
           );
+          this.errorSource.next(null);
         },
         error: (error) => {
-          console.error(error);
+          // Detailed error logging
+          console.error('Error status:', error.status);
+          console.error('Error message:', error.message);
+          console.error('Full error object:', error);
           this.productsSource.next([]);
           this.searchState.next(SearchState.NotFound);
+          this.loading.next(false);
+          this.errorSource.next(error);
         },
         complete: () => this.loading.next(false), // Stop loading,
       });

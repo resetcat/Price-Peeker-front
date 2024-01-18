@@ -35,10 +35,6 @@ export class ProductsService {
           this.errorSource.next(null);
         },
         error: (error) => {
-          // Detailed error logging
-          console.error('Error status:', error.status);
-          console.error('Error message:', error.message);
-          console.error('Full error object:', error);
           this.productsSource.next([]);
           this.searchState.next(SearchState.NotFound);
           this.loading.next(false);

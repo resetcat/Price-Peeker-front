@@ -3,3 +3,9 @@ export interface SearchDto {
   query: string;
   page?: number;
 }
+
+export enum SearchState {
+  Initial,
+  Found,
+  NotFound,
+}

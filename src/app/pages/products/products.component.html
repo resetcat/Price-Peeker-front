@@ -42,17 +42,12 @@
         />
       </figure>
       <div class="card-body flex flex-col justify-between">
-        <div
-          [class]="
-            product.id === 1
-              ? 'badge badge-outline bg-R-shop'
-              : 'badge badge-outline bg-M-shop'
-          "
-        >
+        <div [class]="'badge badge-outline ' + getShopColor(product.id)">
           <p class="text-white">
-            {{ product.id == 1 ? "R-shop" : "M-shop" }}
+            {{ getShopName(product.id) }}
           </p>
         </div>
+
         <!-- Product Name -->
         <h2
           [class]="

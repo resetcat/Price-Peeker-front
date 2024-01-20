@@ -14,6 +14,7 @@ export class ProductsComponent implements OnInit {
     2: { color: 'bg-M-shop', name: 'M-shop' },
     // Add more shops here as needed
     10: { color: 'bg-S&V-shop', name: 'S&V-shop' },
+    11: { color: 'bg-LB-shop', name: 'LB-shop' },
   };
   products: ProductDto[] = [
     {

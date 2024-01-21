@@ -9,6 +9,15 @@ import { ProductsService } from 'src/app/services/products.service';
   styleUrls: ['./products.component.css'],
 })
 export class ProductsComponent implements OnInit {
+  shops: any = {
+    1: { color: 'bg-R-shop', name: 'R-shop' },
+    2: { color: 'bg-M-shop', name: 'M-shop' },
+    // Add more shops here as needed
+    10: { color: 'bg-S&V-shop', name: 'S&V-shop' },
+    11: { color: 'bg-LB-shop', name: 'LB-shop' },
+    12: { color: 'bg-V-shop', name: 'V-shop' },
+    13: { color: 'bg-AO-shop', name: 'AO-shop' },
+  };
   products: ProductDto[] = [
     {
       id: 1,
@@ -101,6 +110,14 @@ export class ProductsComponent implements OnInit {
         this.errorMessage = null; // Reset the error message when there's no error
       }
     });
+  }
+
+  getShopColor(id: number): string {
+    return this.shops[id] ? this.shops[id].color : 'default-color';
+  }
+
+  getShopName(id: number): string {
+    return this.shops[id] ? this.shops[id].name : 'Unknown Shop';
   }
 
   resetSortOrder(): void {

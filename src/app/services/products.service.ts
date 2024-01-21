@@ -19,15 +19,15 @@ export class ProductsService {
 
   constructor(private httpClient: HttpClient) {}
 
-  getProducts(query: string) {
+  getProducts(query: string, shops: string[]) {
     this.loading.next(true); // Start loading
-    const body: SearchDto = { query: query };
-    console.log('trying to reach ' + environment.apiUrl);
+    const body: SearchDto = { query: query, shops: shops };
 
     this.httpClient
       .post<ProductDto[]>(`${environment.apiUrl}/grocery`, body)
       .subscribe({
         next: (data) => {
+          this.urlFixForSnV(data);
           this.productsSource.next(data);
           this.searchState.next(
             data.length > 0 ? SearchState.Found : SearchState.NotFound
@@ -42,5 +42,14 @@ export class ProductsService {
         },
         complete: () => this.loading.next(false), // Stop loading,
       });
+  }
+
+  urlFixForSnV(data: ProductDto[]) {
+    data = data.map((product) => {
+      if (product.id === 10) {
+        product.imgURL = `${environment.apiUrl}/image-proxy?url=${product.imgURL}`;
+      }
+      return product;
+    });
   }
 }

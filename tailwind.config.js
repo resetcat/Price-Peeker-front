@@ -7,6 +7,10 @@ export const theme = {
     colors: {
       'R-shop': '#b70f15',
       'M-shop': '#1b458f',
+      'S&V-shop': '#e53011',
+      'LB-shop': '#f29300',
+      'V-shop': '#862149',
+      'AO-shop': '#990044',
     },
   },
 };

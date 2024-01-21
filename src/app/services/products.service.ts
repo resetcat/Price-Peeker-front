@@ -19,10 +19,9 @@ export class ProductsService {
 
   constructor(private httpClient: HttpClient) {}
 
-  getProducts(query: string) {
+  getProducts(query: string, shops: string[]) {
     this.loading.next(true); // Start loading
-    const body: SearchDto = { query: query };
-    console.log('trying to reach ' + environment.apiUrl);
+    const body: SearchDto = { query: query, shops: shops };
 
     this.httpClient
       .post<ProductDto[]>(`${environment.apiUrl}/grocery`, body)

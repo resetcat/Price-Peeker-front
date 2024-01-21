@@ -11,14 +11,25 @@ export class HeaderComponent implements OnInit {
   searchQuery: string = '';
   loading$ = this.productService.loading.asObservable();
 
+  private groceryShops = ['R-Gshop', 'M-Gshop'];
+  private spiritShops = ['SnV-Ashop', 'LB-Ashop', 'V-Ashop', 'AO-Ashop'];
+  selectedShops: string[] = [];
+  currentShopType: 'grocery' | 'spirit' = 'grocery';
+
   constructor(private productService: ProductsService) {}
 
   ngOnInit(): void {
     this.initializeTheme();
   }
 
+  selectShopType(type: 'grocery' | 'spirit') {
+    this.currentShopType = type;
+    this.selectedShops =
+      type === 'grocery' ? this.groceryShops : this.spiritShops;
+  }
+
   getProducts(query: string) {
-    this.productService.getProducts(query);
+    this.productService.getProducts(this.searchQuery, this.selectedShops);
   }
 
   initializeTheme() {

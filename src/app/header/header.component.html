@@ -8,8 +8,43 @@
       <a href="/">
         <img class="w-40 h-auto" src="/assets/images/logo.svg" alt="Logo" />
       </a>
+
       <!-- Additional Links or Icons -->
       <div class="flex justify-end">
+        <!-- Shop Type Buttons -->
+        <div class="flex gap-2">
+          <button
+            class="btn"
+            [ngClass]="{
+              'btn-accent': currentShopType === 'grocery',
+              'btn-default': currentShopType !== 'grocery',
+              'p-2 rounded-xl': true
+            }"
+            (click)="selectShopType('grocery')"
+          >
+            <img
+              src="/assets/images/grocery.svg"
+              class="'w-10 h-10 -translate-y-1"
+              alt="Search"
+            />
+          </button>
+          <button
+            class="btn"
+            [ngClass]="{
+              'btn-accent': currentShopType === 'spirit',
+              'btn-default': currentShopType !== 'spirit',
+              'p-2 rounded-xl': true
+            }"
+            (click)="selectShopType('spirit')"
+          >
+            <img
+              src="/assets/images/bottle.svg"
+              class="'w-10 h-10 -translate-y-1"
+              alt="Search"
+            />
+          </button>
+        </div>
+
         <label class="swap swap-rotate pl-2">
           <!-- this hidden checkbox controls the state -->
           <input
@@ -98,6 +133,41 @@
     <a href="/">
       <img class="w-40 h-auto" src="/assets/images/logo.svg" alt="Logo" />
     </a>
+
+    <!-- Shop Type Buttons -->
+    <div class="flex gap-2">
+      <button
+        class="btn"
+        [ngClass]="{
+          'btn-accent': currentShopType === 'grocery',
+          'btn-default': currentShopType !== 'grocery',
+          'p-2 rounded-xl': true
+        }"
+        (click)="selectShopType('grocery')"
+      >
+        <img
+          src="/assets/images/grocery.svg"
+          class="'w-10 h-10 -translate-y-1"
+          alt="Search"
+        />
+      </button>
+      <button
+        class="btn"
+        [ngClass]="{
+          'btn-accent': currentShopType === 'spirit',
+          'btn-default': currentShopType !== 'spirit',
+          'p-2 rounded-xl': true
+        }"
+        (click)="selectShopType('spirit')"
+      >
+        <img
+          src="/assets/images/bottle.svg"
+          class="'w-10 h-10 -translate-y-1"
+          alt="Search"
+        />
+      </button>
+    </div>
+
     <!-- Search Bar -->
     <div
       class="relative flex flex-row items-center w-full md:w-2/3 lg:w-1/2 gap-1"

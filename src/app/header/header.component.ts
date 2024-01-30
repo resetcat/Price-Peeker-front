@@ -13,7 +13,7 @@ export class HeaderComponent implements OnInit {
 
   private groceryShops = ['R-Gshop', 'M-Gshop'];
   private spiritShops = ['SnV-Ashop', 'LB-Ashop', 'V-Ashop', 'AO-Ashop'];
-  selectedShops: string[] = [];
+  selectedShops: string[] = this.groceryShops;
   currentShopType: 'grocery' | 'spirit' = 'grocery';
 
   constructor(private productService: ProductsService) {}

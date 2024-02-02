@@ -12,7 +12,13 @@ export class HeaderComponent implements OnInit {
   loading$ = this.productService.loading.asObservable();
 
   private groceryShops = ['R-Gshop', 'M-Gshop'];
-  private spiritShops = ['SnV-Ashop', 'LB-Ashop', 'V-Ashop', 'AO-Ashop'];
+  private spiritShops = [
+    'SnV-Ashop',
+    'LB-Ashop',
+    'V-Ashop',
+    'AO-Ashop',
+    'SA-Ashop',
+  ];
   selectedShops: string[] = this.groceryShops;
   currentShopType: 'grocery' | 'spirit' = 'grocery';
 

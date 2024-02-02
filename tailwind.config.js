@@ -11,6 +11,7 @@ export const theme = {
       'LB-shop': '#f29300',
       'V-shop': '#862149',
       'AO-shop': '#990044',
+      'SA-shop': '#c04c0c',
     },
   },
 };

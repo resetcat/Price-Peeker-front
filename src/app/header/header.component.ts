@@ -11,15 +11,9 @@ export class HeaderComponent implements OnInit {
   searchQuery: string = '';
   loading$ = this.productService.loading.asObservable();
 
-  private groceryShops = ['R-Gshop', 'M-Gshop'];
-  private spiritShops = [
-    'SnV-Ashop',
-    'LB-Ashop',
-    'V-Ashop',
-    'AO-Ashop',
-    'SA-Ashop',
-  ];
-  selectedShops: string[] = this.groceryShops;
+  private groceryShops = [1, 2];
+  private spiritShops = [10, 11, 12, 13, 14];
+  selectedShops: number[] = this.groceryShops;
   currentShopType: 'grocery' | 'spirit' = 'grocery';
 
   constructor(private productService: ProductsService) {}

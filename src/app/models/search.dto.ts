@@ -1,5 +1,5 @@
 export interface SearchDto {
-  shops?: string[];
+  shops?: number[];
   query: string;
   page?: number;
 }

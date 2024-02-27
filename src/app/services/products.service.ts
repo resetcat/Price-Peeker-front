@@ -19,7 +19,7 @@ export class ProductsService {
 
   constructor(private httpClient: HttpClient) {}
 
-  getProducts(query: string, shops: string[]) {
+  getProducts(query: string, shops: number[]) {
     this.loading.next(true); // Start loading
     const body: SearchDto = { query: query, shops: shops };
 

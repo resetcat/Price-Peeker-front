@@ -44,6 +44,28 @@ export class ProductsService {
       });
   }
 
+  getCategory(id: number, page: number = 1) {
+    this.loading.next(true);
+    this.httpClient
+      .get<ProductDto[]>(`${environment.apiUrl}/category?id=${id}&page=${page}`)
+      .subscribe({
+        next: (data) => {
+          this.productsSource.next(data); // Assuming the structure is compatible
+          this.searchState.next(
+            data.length > 0 ? SearchState.Found : SearchState.NotFound
+          );
+          this.errorSource.next(null);
+        },
+        error: (error) => {
+          this.productsSource.next([]);
+          this.searchState.next(SearchState.NotFound);
+          this.loading.next(false);
+          this.errorSource.next(error);
+        },
+        complete: () => this.loading.next(false),
+      });
+  }
+
   urlFixForSnV(data: ProductDto[]) {
     data = data.map((product) => {
       if (product.id === 10) {

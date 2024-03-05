@@ -1,6 +1,9 @@
 .btn-default {
-
   background-color: #7d919b;
   border: none;
 
+}
+
+.drawer {
+  z-index: 1000; /* Ensure this is higher than other components */
 }

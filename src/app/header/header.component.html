@@ -280,13 +280,8 @@
       class="drawer-overlay"
     ></label>
     <ul class="menu p-4 w-96 bg-base-200 text-base-content mt-[80px]">
-      <li *ngFor="let category of categories; let i = index">
-        <!-- akcijas -->
-        <a *ngIf="i === 0" (click)="categorySelect(category.id)">{{
-          category.name
-        }}</a>
-        <!-- For other categories, simply display the name without a click event -->
-        <a *ngIf="i !== 0">{{ category.name }}</a>
+      <li *ngFor="let category of categories">
+        <a>{{ category.name }}</a>
         <ul *ngIf="category.categories && category.categories.length > 0">
           <li *ngFor="let subCategory of category.categories">
             <a (click)="categorySelect(subCategory.id)">{{

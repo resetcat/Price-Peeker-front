@@ -41,7 +41,6 @@ export class HeaderComponent implements OnInit {
   }
 
   categorySelect(id: number): void {
-    console.log('Clicked subcategory ID:', id);
     this.productService.getCategory(id);
     this.drawerOpen = false;
   }

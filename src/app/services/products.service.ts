@@ -16,6 +16,7 @@ export class ProductsService {
   searchState$ = this.searchState.asObservable();
   private errorSource = new BehaviorSubject<any>(null);
   error$ = this.errorSource.asObservable();
+  categoryId = new BehaviorSubject<any>(null);
 
   constructor(private httpClient: HttpClient) {}
 
@@ -32,6 +33,7 @@ export class ProductsService {
           this.searchState.next(
             data.length > 0 ? SearchState.Found : SearchState.NotFound
           );
+          this.categoryId.next(null);
           this.errorSource.next(null);
         },
         error: (error) => {
@@ -54,6 +56,7 @@ export class ProductsService {
           this.searchState.next(
             data.length > 0 ? SearchState.Found : SearchState.NotFound
           );
+          this.categoryId.next(id);
           this.errorSource.next(null);
         },
         error: (error) => {

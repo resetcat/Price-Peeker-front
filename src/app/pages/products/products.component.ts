@@ -1,4 +1,11 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  HostListener,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
+import { distinctUntilChanged } from 'rxjs';
 import { ProductDto } from 'src/app/models/products.dto';
 import { SearchState } from 'src/app/models/search.dto';
 import { ProductsService } from 'src/app/services/products.service';
@@ -90,10 +97,14 @@ export class ProductsComponent implements OnInit {
   searchState: SearchState | undefined;
   errorMessage: string | null = null;
   @ViewChild('select') select!: ElementRef;
+  categoryPage: number = 1;
+  categoryId$ = this.productService.categoryId.asObservable();
 
   constructor(private productService: ProductsService) {}
 
   ngOnInit(): void {
+    console.log('triggered');
+
     this.productService.products$.subscribe((data) => {
       this.products = data;
       this.defaultProducts = data;
@@ -111,6 +122,29 @@ export class ProductsComponent implements OnInit {
         this.errorMessage = null; // Reset the error message when there's no error
       }
     });
+
+    this.productService.categoryId
+      .pipe(
+        distinctUntilChanged() // Only react to changes in the category ID
+      )
+      .subscribe(() => {
+        this.categoryPage = 1;
+      });
+  }
+
+  nextPage() {
+    const categoryId = this.productService.categoryId.getValue();
+    this.categoryPage++;
+    this.productService.getCategory(categoryId, this.categoryPage);
+  }
+
+  previousePage() {
+    if (this.categoryPage > 1) {
+      const categoryId = this.productService.categoryId.getValue();
+
+      this.categoryPage--;
+      this.productService.getCategory(categoryId, this.categoryPage);
+    }
   }
 
   getShopColor(id: number): string {

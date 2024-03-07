@@ -16,10 +16,11 @@ export class ProductsService {
   searchState$ = this.searchState.asObservable();
   private errorSource = new BehaviorSubject<any>(null);
   error$ = this.errorSource.asObservable();
+  categoryId = new BehaviorSubject<any>(null);
 
   constructor(private httpClient: HttpClient) {}
 
-  getProducts(query: string, shops: string[]) {
+  getProducts(query: string, shops: number[]) {
     this.loading.next(true); // Start loading
     const body: SearchDto = { query: query, shops: shops };
 
@@ -32,6 +33,7 @@ export class ProductsService {
           this.searchState.next(
             data.length > 0 ? SearchState.Found : SearchState.NotFound
           );
+          this.categoryId.next(null);
           this.errorSource.next(null);
         },
         error: (error) => {
@@ -41,6 +43,29 @@ export class ProductsService {
           this.errorSource.next(error);
         },
         complete: () => this.loading.next(false), // Stop loading,
+      });
+  }
+
+  getCategory(id: number, page: number = 1) {
+    this.loading.next(true);
+    this.httpClient
+      .get<ProductDto[]>(`${environment.apiUrl}/category?id=${id}&page=${page}`)
+      .subscribe({
+        next: (data) => {
+          this.productsSource.next(data); // Assuming the structure is compatible
+          this.searchState.next(
+            data.length > 0 ? SearchState.Found : SearchState.NotFound
+          );
+          this.categoryId.next(id);
+          this.errorSource.next(null);
+        },
+        error: (error) => {
+          this.productsSource.next([]);
+          this.searchState.next(SearchState.NotFound);
+          this.loading.next(false);
+          this.errorSource.next(error);
+        },
+        complete: () => this.loading.next(false),
       });
   }
 

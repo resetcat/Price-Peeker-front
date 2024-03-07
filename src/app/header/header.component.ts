@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ProductsService } from '../services/products.service';
+import { CategoryService } from '../services/category.service';
 
 @Component({
   selector: 'app-header',
@@ -10,22 +11,38 @@ export class HeaderComponent implements OnInit {
   isDarkTheme: boolean = false;
   searchQuery: string = '';
   loading$ = this.productService.loading.asObservable();
+  categories: any[] = [];
+  drawerOpen: boolean = false;
 
-  private groceryShops = ['R-Gshop', 'M-Gshop'];
-  private spiritShops = [
-    'SnV-Ashop',
-    'LB-Ashop',
-    'V-Ashop',
-    'AO-Ashop',
-    'SA-Ashop',
-  ];
-  selectedShops: string[] = this.groceryShops;
+  private groceryShops = [1, 2];
+  private spiritShops = [10, 11, 12, 13, 14];
+  selectedShops: number[] = this.groceryShops;
   currentShopType: 'grocery' | 'spirit' = 'grocery';
 
-  constructor(private productService: ProductsService) {}
+  constructor(
+    private productService: ProductsService,
+    private categoryService: CategoryService
+  ) {}
 
   ngOnInit(): void {
     this.initializeTheme();
+    this.loadCategories();
+  }
+
+  private loadCategories(): void {
+    this.categoryService.getAllCategories().subscribe({
+      next: (categories: any) => {
+        this.categories = categories;
+      },
+      error: (error) => {
+        console.error('Failed to fetch categories', error);
+      },
+    });
+  }
+
+  categorySelect(id: number): void {
+    this.productService.getCategory(id);
+    this.drawerOpen = false;
   }
 
   selectShopType(type: 'grocery' | 'spirit') {
@@ -36,6 +53,7 @@ export class HeaderComponent implements OnInit {
 
   getProducts(query: string) {
     this.productService.getProducts(this.searchQuery, this.selectedShops);
+    this.drawerOpen = false;
   }
 
   initializeTheme() {

@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ProductsService } from '../services/products.service';
 import { CategoryService } from '../services/category.service';
+import { CategoryDTO, ParentCategoryDTO } from '../models/category.dto';
+import { first } from 'rxjs';
 
 @Component({
   selector: 'app-header',
@@ -30,14 +32,33 @@ export class HeaderComponent implements OnInit {
   }
 
   private loadCategories(): void {
-    this.categoryService.getAllCategories().subscribe({
-      next: (categories: any) => {
-        this.categories = categories;
-      },
-      error: (error) => {
-        console.error('Failed to fetch categories', error);
-      },
-    });
+    this.categoryService
+      .getAllCategories()
+      .pipe(first())
+      .subscribe({
+        next: (categories: any) => {
+          this.categories = this.reorderCategories(categories);
+        },
+        error: (error) => {
+          console.error('Failed to fetch categories', error);
+        },
+      });
+  }
+
+  reorderCategories(categories: ParentCategoryDTO[]) {
+    const akcijas = categories.find(
+      (category: CategoryDTO) => category.name === 'Akcijas'
+    );
+    const alkohols = categories.find(
+      (category: CategoryDTO) => category.name === 'Alkohols'
+    );
+    const others = categories.filter(
+      (category: CategoryDTO) =>
+        category.name !== 'Akcijas' && category.name !== 'Alkohols'
+    );
+
+    const ordered = [akcijas, alkohols, ...others].filter(Boolean);
+    return ordered;
   }
 
   categorySelect(id: number): void {

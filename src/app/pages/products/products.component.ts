@@ -103,8 +103,6 @@ export class ProductsComponent implements OnInit {
   constructor(private productService: ProductsService) {}
 
   ngOnInit(): void {
-    console.log('triggered');
-
     this.productService.products$.subscribe((data) => {
       this.products = data;
       this.defaultProducts = data;
@@ -124,9 +122,7 @@ export class ProductsComponent implements OnInit {
     });
 
     this.productService.categoryId
-      .pipe(
-        distinctUntilChanged() // Only react to changes in the category ID
-      )
+      .pipe(distinctUntilChanged())
       .subscribe(() => {
         this.categoryPage = 1;
       });

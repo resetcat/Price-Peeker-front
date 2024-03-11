@@ -21,46 +21,61 @@ export class ProductsService {
   constructor(private httpClient: HttpClient) {}
 
   getProducts(query: string, shops: number[]) {
+    this.loading.next(true); // Start loading
     const body: SearchDto = { query: query, shops: shops };
-    this.fetchData(`${environment.apiUrl}/grocery`, 'post', body);
+
+    this.httpClient
+      .post<ProductDto[]>(`${environment.apiUrl}/grocery`, body)
+      .subscribe({
+        next: (data) => {
+          this.urlFixForSnV(data);
+          this.productsSource.next(data);
+          this.searchState.next(
+            data.length > 0 ? SearchState.Found : SearchState.NotFound
+          );
+          this.categoryId.next(null);
+          this.errorSource.next(null);
+        },
+        error: (error) => {
+          this.productsSource.next([]);
+          this.searchState.next(SearchState.NotFound);
+          this.loading.next(false);
+          this.errorSource.next(error);
+        },
+        complete: () => this.loading.next(false), // Stop loading,
+      });
   }
 
   getCategory(id: number, page: number = 1) {
-    const params = `?id=${id}&page=${page}`;
-    this.fetchData(`${environment.apiUrl}/category${params}`, 'get');
-  }
-
-  private fetchData(url: string, method: 'get' | 'post', body?: any) {
     this.loading.next(true);
-    const request =
-      method === 'get'
-        ? this.httpClient.get<ProductDto[]>(url)
-        : this.httpClient.post<ProductDto[]>(url, body);
-
-    request.subscribe({
-      next: (data) => {
-        this.urlFixForSnV(data);
-        this.productsSource.next(data);
-        this.searchState.next(
-          data.length > 0 ? SearchState.Found : SearchState.NotFound
-        );
-        this.categoryId.next(method === 'get' ? body?.id : null);
-        this.errorSource.next(null);
-      },
-      error: (error) => {
-        this.productsSource.next([]);
-        this.searchState.next(SearchState.NotFound);
-        this.errorSource.next(error);
-      },
-      complete: () => this.loading.next(false),
-    });
+    this.httpClient
+      .get<ProductDto[]>(`${environment.apiUrl}/category?id=${id}&page=${page}`)
+      .subscribe({
+        next: (data) => {
+          this.urlFixForSnV(data);
+          this.productsSource.next(data); // Assuming the structure is compatible
+          this.searchState.next(
+            data.length > 0 ? SearchState.Found : SearchState.NotFound
+          );
+          this.categoryId.next(id);
+          this.errorSource.next(null);
+        },
+        error: (error) => {
+          this.productsSource.next([]);
+          this.searchState.next(SearchState.NotFound);
+          this.loading.next(false);
+          this.errorSource.next(error);
+        },
+        complete: () => this.loading.next(false),
+      });
   }
 
-  private urlFixForSnV(data: ProductDto[]) {
-    data.forEach((product) => {
+  urlFixForSnV(data: ProductDto[]) {
+    data = data.map((product) => {
       if (product.id === 10) {
         product.imgURL = `${environment.apiUrl}/image-proxy?url=${product.imgURL}`;
       }
+      return product;
     });
   }
 }

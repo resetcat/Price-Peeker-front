@@ -39,6 +39,7 @@
           src="{{ product.imgURL }}"
           alt="{{ product.name }}"
           class="object-cover w-full h-full bord rounded-2xl"
+          (click)="onImageClick(product)"
         />
       </figure>
       <div class="card-body flex flex-col justify-between">

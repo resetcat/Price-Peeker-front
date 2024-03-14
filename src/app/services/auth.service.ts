@@ -31,7 +31,6 @@ export class AuthService {
           }
         }),
         catchError((error) => {
-          // Handle HTTP errors or unexpected errors
           console.error('Authentication failed:', error);
           return throwError(() => new Error('Authentication failed'));
         })
@@ -42,7 +41,7 @@ export class AuthService {
     this.isLoggedIn.next(false);
   }
 
-  validateToken(): void {
+  async validateToken() {
     const token = localStorage.getItem('access_token');
     if (!token) {
       this.isLoggedIn.next(false);
@@ -55,7 +54,7 @@ export class AuthService {
       })
       .subscribe({
         next: (respone) => this.isLoggedIn.next(true),
-        error: (error) => this.isLoggedIn.next(false),
+        error: (error) => this.logout(),
       });
   }
 }

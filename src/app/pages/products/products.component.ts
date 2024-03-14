@@ -5,10 +5,13 @@ import {
   OnInit,
   ViewChild,
 } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { distinctUntilChanged } from 'rxjs';
 import { ProductDto } from 'src/app/models/products.dto';
 import { SearchState } from 'src/app/models/search.dto';
+import { AuthService } from 'src/app/services/auth.service';
 import { ProductsService } from 'src/app/services/products.service';
+import { NotificationModalComponent } from '../modals/notification-modal/notification-modal.component';
 
 @Component({
   selector: 'app-products',
@@ -35,6 +38,7 @@ export class ProductsComponent implements OnInit {
       originalPrice: 1.49,
       pricePerUnit: '1.49€/kg',
       cardOwnerOnly: false,
+      discountedPrice: 1.22,
     },
     {
       id: 2,
@@ -81,15 +85,6 @@ export class ProductsComponent implements OnInit {
       pricePerUnit: '1.49€/gab.',
       cardOwnerOnly: false,
     },
-    {
-      id: 2,
-      name: 'Svaigo kāpostu salāti ar seleriju 150g',
-      imgURL:
-        'https://cdn.barbora.lv/products/5b8d260b-746e-43ad-a97d-a5f2cf7fba61_s.png',
-      originalPrice: 0,
-      pricePerUnit: '',
-      cardOwnerOnly: false,
-    },
   ];
   defaultProducts: ProductDto[] = [];
   loading$ = this.productService.loading.asObservable();
@@ -99,15 +94,20 @@ export class ProductsComponent implements OnInit {
   @ViewChild('select') select!: ElementRef;
   categoryPage: number = 1;
   categoryId$ = this.productService.categoryId.asObservable();
+  isLoggedIn: boolean = false;
 
-  constructor(private productService: ProductsService) {}
+  constructor(
+    private productService: ProductsService,
+    private authService: AuthService,
+    public dialog: MatDialog
+  ) {}
 
   ngOnInit(): void {
-    this.productService.products$.subscribe((data) => {
-      this.products = data;
-      this.defaultProducts = data;
-      this.resetSortOrder();
-    });
+    // this.productService.products$.subscribe((data) => {
+    //   this.products = data;
+    //   this.defaultProducts = data;
+    //   this.resetSortOrder();
+    // });
 
     this.productService.searchState$.subscribe((state) => {
       this.searchState = state;
@@ -126,6 +126,18 @@ export class ProductsComponent implements OnInit {
       .subscribe(() => {
         this.categoryPage = 1;
       });
+    this.authService.validateToken();
+    this.authService.isLoggedIn$.subscribe((loggedIn) => {
+      this.isLoggedIn = loggedIn;
+    });
+  }
+
+  onImageClick(item: ProductDto) {
+    if (this.isLoggedIn) {
+      this.dialog.open(NotificationModalComponent, {
+        data: item,
+      });
+    }
   }
 
   nextPage() {

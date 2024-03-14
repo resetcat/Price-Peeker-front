@@ -1,0 +1,156 @@
+<!-- Container for both the notification window and the table -->
+<div class="flex flex-col bg-base-100 md:flex-row">
+  <!-- Notification window -->
+  <div class="card w-[148px] md:w-56 shadow-xl m-4">
+    <figure class="h-36 w-36 md:h-56 md:w-56 flex items-center justify-center">
+      <img
+        src="{{ data.imgURL }}"
+        alt="{{ data.name }}"
+        class="object-cover w-full h-full bord rounded-2xl"
+      />
+    </figure>
+    <div class="card-body flex flex-col justify-between">
+      <!-- data Name -->
+      <h2
+        [class]="
+          data.originalPrice
+            ? 'text-sm md:text-lg card-title'
+            : 'text-sm md:text-lg card-title line-through text-gray-400'
+        "
+      >
+        {{ data.name }}
+      </h2>
+
+      <!-- Discount Badge -->
+      <div
+        *ngIf="data.discount"
+        class="badge badge-secondary text-[12px] md:text-sm"
+      >
+        {{ data.discount }} atlaide
+      </div>
+
+      <!-- Prices and Price Per Unit or Out of Stock Message -->
+      <div *ngIf="data.originalPrice; else outOfStock" class="flex flex-col">
+        <div class="flex flex-row items-baseline">
+          <!-- Original Price -->
+          <span
+            class="text-xs font-semibold line-through decoration-R-shop decoration-2 md:text-sm"
+            *ngIf="data.discountedPrice"
+          >
+            {{ data.originalPrice }}€
+          </span>
+          <!-- Discounted Price -->
+          <span
+            class="text-sm font-bold ml-2 md:text-lg"
+            *ngIf="data.discountedPrice"
+          >
+            {{ data.discountedPrice }}€
+          </span>
+          <!-- Display original price if there is no discount -->
+          <span
+            class="text-sm font-bold md:text-lg"
+            *ngIf="!data.discountedPrice"
+          >
+            {{ data.originalPrice }}€
+          </span>
+        </div>
+        <div class="flex justify-between">
+          <!-- Price Per Unit -->
+          <span class="text-xs text-gray-400 md:text-sm">
+            {{ data.pricePerUnit }}
+          </span>
+        </div>
+      </div>
+      <!-- Out of Stock Template -->
+      <ng-template #outOfStock>
+        <div class="text-center text-red-500 font-bold">prece nav pieejama</div>
+      </ng-template>
+    </div>
+    <div class="flex w-full">
+      <button class="btn btn-primary flex-grow" (click)="onNoClick()">
+        Close
+      </button>
+      <button class="btn btn-accent flex-grow" (click)="addNotification(data)">
+        Add
+      </button>
+    </div>
+  </div>
+
+  <!-- Table container -->
+  <div class="flex flex-col w-full md:ml-4 overflow-x-auto">
+    <table class="min-w-full leading-normal">
+      <thead>
+        <tr>
+          <th
+            class="px-2 py-2 md:px-5 md:py-3 border-b-2 border-gray-200 bg-base-100 text-left text-xs font-semibold uppercase tracking-wider"
+          >
+            Shop
+          </th>
+          <th
+            class="px-2 py-2 md:px-5 md:py-3 border-b-2 border-gray-200 bg-base-100 text-left text-xs font-semibold uppercase tracking-wider"
+          >
+            Name
+          </th>
+          <th
+            class="px-2 py-2 md:px-5 md:py-3 border-b-2 border-gray-200 bg-base-100 text-left text-xs font-semibold uppercase tracking-wider"
+          >
+            Date
+          </th>
+          <th
+            class="px-2 py-2 md:px-5 md:py-3 border-b-2 border-gray-200 bg-base-100 text-left text-xs font-semibold uppercase tracking-wider"
+          >
+            Price
+          </th>
+          <th
+            class="px-2 py-2 md:px-5 md:py-3 border-b-2 border-gray-200 bg-base-100 text-left text-xs font-semibold uppercase tracking-wider"
+          >
+            Actions
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Loop through notifications array -->
+        <tr *ngFor="let notification of notifications; let i = index">
+          <td
+            class="px-2 py-3 md:px-5 md:py-5 border-b border-gray-200 bg-base-100 text-xs md:text-sm"
+          >
+            <p class="whitespace-no-wrap">
+              {{ notification.shop }}
+            </p>
+          </td>
+          <td
+            class="px-2 py-3 md:px-5 md:py-5 border-b border-gray-200 bg-base-100 text-xs md:text-sm"
+          >
+            <p class="w-full max-w-[120px] md:max-w-xs truncate">
+              {{ notification.name }}
+            </p>
+          </td>
+          <td
+            class="px-2 py-3 md:px-5 md:py-5 border-b border-gray-200 bg-base-100 text-xs md:text-sm"
+          >
+            <p class="whitespace-no-wrap">
+              {{ notification.date }}
+            </p>
+          </td>
+          <td
+            class="px-2 py-3 md:px-5 md:py-5 border-b border-gray-200 bg-base-100 text-xs md:text-sm"
+          >
+            <p class="whitespace-no-wrap">
+              {{ notification.price }}
+            </p>
+          </td>
+          <td
+            class="px-2 py-3 md:px-5 md:py-5 border-b border-gray-200 bg-base-100 text-xs md:text-sm flex justify-center md:justify-start"
+          >
+            <button
+              class="btn btn-red-500 text-xs md:text-sm"
+              (click)="deleteNotification(i)"
+            >
+              Delete
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

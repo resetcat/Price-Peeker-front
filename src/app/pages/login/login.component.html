@@ -1,0 +1,33 @@
+<div class="flex items-center justify-center min-h-screen">
+  <div class="p-6 m-4 bg-base-200 shadow-md rounded-lg w-full max-w-sm">
+    <form (ngSubmit)="login()" class="space-y-4">
+      <div>
+        <label class="label">
+          <span class="label-text">Username</span>
+        </label>
+        <input
+          type="text"
+          [(ngModel)]="username"
+          name="username"
+          class="input input-bordered w-full"
+          placeholder="Username"
+          required
+        />
+      </div>
+      <div>
+        <label class="label">
+          <span class="label-text">Password</span>
+        </label>
+        <input
+          type="password"
+          [(ngModel)]="password"
+          name="password"
+          class="input input-bordered w-full"
+          placeholder="Password"
+          required
+        />
+      </div>
+      <button type="submit" class="btn btn-primary w-full">Login</button>
+    </form>
+  </div>
+</div>

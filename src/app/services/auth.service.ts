@@ -34,16 +34,6 @@ export class AuthService {
     this.isLoggedIn.next(false);
   }
 
-  checkLoginStatus() {
-    const token = localStorage.getItem('access_token');
-    if (token) {
-      // Optionally validate token
-      this.isLoggedIn.next(true);
-    } else {
-      this.isLoggedIn.next(false);
-    }
-  }
-
   validateToken(): void {
     const token = localStorage.getItem('access_token');
     if (!token) {

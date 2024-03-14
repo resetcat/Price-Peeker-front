@@ -103,11 +103,11 @@ export class ProductsComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    // this.productService.products$.subscribe((data) => {
-    //   this.products = data;
-    //   this.defaultProducts = data;
-    //   this.resetSortOrder();
-    // });
+    this.productService.products$.subscribe((data) => {
+      this.products = data;
+      this.defaultProducts = data;
+      this.resetSortOrder();
+    });
 
     this.productService.searchState$.subscribe((state) => {
       this.searchState = state;

@@ -1,6 +1,8 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { NotificationDTO } from 'src/app/models/notification.dto';
 import { ProductDto } from 'src/app/models/products.dto';
+import { NotificationService } from 'src/app/services/notification.service';
 
 @Component({
   selector: 'app-notification-modal',
@@ -8,47 +10,25 @@ import { ProductDto } from 'src/app/models/products.dto';
   styleUrls: ['./notification-modal.component.css'],
 })
 export class NotificationModalComponent implements OnInit {
-  notifications = [
-    {
-      shop: 1,
-      name: 'test',
-      date: '02.03.2024',
-      price: 15.5,
-    },
-    {
-      shop: 2,
-      name: 'Selerijas ar jūras kāpostiem ',
-      date: '02.04.2024',
-      price: 1.8,
-    },
-    {
-      shop: 1,
-      name: 'Seleriju kāti I Love',
-      date: '02.05.2024',
-      price: 1.99,
-    },
-    {
-      shop: 2,
-      name: 'Marinētas selerijas SMAK rīvētas 300g',
-      date: '02.06.2024',
-      price: 1.22,
-    },
-    {
-      shop: 1,
-      name: 'Seleriju saknes',
-      date: '02.07.2024',
-      price: 1.49,
-    },
-  ];
+  notifications: NotificationDTO[] = [];
   constructor(
     public dialogRef: MatDialogRef<NotificationModalComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: ProductDto
+    @Inject(MAT_DIALOG_DATA) public data: ProductDto,
+    private notificationService: NotificationService
   ) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.fetchNotifications();
+  }
 
   onNoClick(): void {
     this.dialogRef.close();
+  }
+
+  fetchNotifications(): void {
+    this.notificationService.getNotifications().subscribe((notifications) => {
+      this.notifications = notifications;
+    });
   }
 
   addNotification(product: ProductDto) {
@@ -56,23 +36,19 @@ export class NotificationModalComponent implements OnInit {
       alert('You cannot add more than 5 notifications.');
       return;
     }
-    const currentDate = new Date();
-    const formattedDate = `${currentDate
-      .getDate()
-      .toString()
-      .padStart(2, '0')}.${(currentDate.getMonth() + 1)
-      .toString()
-      .padStart(2, '0')}.${currentDate.getFullYear()}`;
-
-    this.notifications.push({
-      shop: product.id,
-      name: product.name,
-      date: formattedDate,
-      price: product.originalPrice,
+    this.notificationService.addNotification(product).subscribe((response) => {
+      this.notifications.push(response);
     });
   }
 
   deleteNotification(index: number): void {
-    this.notifications.splice(index, 1);
+    const notificationId = this.notifications[index].id;
+    this.notificationService
+      .deleteNotification(notificationId)
+      .subscribe(() => {
+        this.notifications = this.notifications.filter(
+          (n) => n.id !== notificationId
+        );
+      });
   }
 }

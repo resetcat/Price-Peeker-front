@@ -129,7 +129,7 @@
             class="px-2 py-3 md:px-5 md:py-5 border-b border-gray-200 bg-base-100 text-xs md:text-sm"
           >
             <p class="whitespace-no-wrap">
-              {{ notification.date }}
+              {{ notification.date | date : "dd.MM.yyyy" }}
             </p>
           </td>
           <td

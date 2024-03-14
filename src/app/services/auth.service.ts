@@ -42,16 +42,8 @@ export class AuthService {
   }
 
   async validateToken() {
-    const token = localStorage.getItem('access_token');
-    if (!token) {
-      this.isLoggedIn.next(false);
-      return;
-    }
-
     this.httpClient
-      .get<{ isValid: boolean }>(`${environment.apiUrl}/auth/validateToken`, {
-        headers: { Authorization: `Bearer ${token}` },
-      })
+      .get<{ isValid: boolean }>(`${environment.apiUrl}/auth/validateToken`)
       .subscribe({
         next: (respone) => this.isLoggedIn.next(true),
         error: (error) => this.logout(),

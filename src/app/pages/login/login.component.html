@@ -1,0 +1,69 @@
+<!-- Display error alert  -->
+<div *ngIf="showError" role="alert" class="alert alert-error">
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    class="stroke-current shrink-0 h-6 w-6"
+    fill="none"
+    viewBox="0 0 24 24"
+  >
+    <path
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      stroke-width="2"
+      d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
+    />
+  </svg>
+  <span>{{ errorMessage }}</span>
+</div>
+
+<!-- Display success alert  -->
+<div *ngIf="showSuccess" role="alert" class="alert alert-success">
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    class="stroke-current shrink-0 h-6 w-6"
+    fill="none"
+    viewBox="0 0 24 24"
+  >
+    <path
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      stroke-width="2"
+      d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+    />
+  </svg>
+  <span>Your purchase has been confirmed!</span>
+</div>
+
+<div class="flex items-center justify-center min-h-screen">
+  <div class="p-6 m-4 bg-base-200 shadow-md rounded-lg w-full max-w-sm">
+    <form (ngSubmit)="login()" class="space-y-4">
+      <div>
+        <label class="label">
+          <span class="label-text">Username</span>
+        </label>
+        <input
+          type="text"
+          [(ngModel)]="username"
+          name="username"
+          class="input input-bordered w-full"
+          placeholder="Username"
+          required
+        />
+      </div>
+      <div>
+        <label class="label">
+          <span class="label-text">Password</span>
+        </label>
+        <input
+          type="password"
+          [(ngModel)]="password"
+          name="password"
+          class="input input-bordered w-full"
+          placeholder="Password"
+          required
+        />
+      </div>
+      <button type="submit" class="btn btn-primary w-full">Login</button>
+    </form>
+  </div>
+</div>

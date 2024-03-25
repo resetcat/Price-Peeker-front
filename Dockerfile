@@ -13,7 +13,7 @@ RUN npm install
 
 # Copy source files and build the project
 COPY . .
-RUN npm run build --prod
+RUN npm run build --prod --base-href=/
 
 # Stage 2: Serve the application using Nginx
 FROM nginx:alpine

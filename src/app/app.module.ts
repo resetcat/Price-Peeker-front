@@ -12,10 +12,11 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NotificationModalComponent } from './pages/modals/notification-modal/notification-modal.component';
 import { MatDialogModule } from '@angular/material/dialog';
 import { AuthInterceptor } from './guards/auth.interceptor';
+import { FooterComponent } from './pages/footer/footer.component';
 
 const routes: Routes = [
   { path: '', component: ProductsComponent },
-  { path: 'admin/login', component: LoginComponent },
+  { path: 'login', component: LoginComponent },
 ];
 
 @NgModule({
@@ -25,6 +26,7 @@ const routes: Routes = [
     ProductsComponent,
     LoginComponent,
     NotificationModalComponent,
+    FooterComponent,
   ],
   imports: [
     BrowserModule,

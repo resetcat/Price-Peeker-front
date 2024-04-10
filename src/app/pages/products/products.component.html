@@ -1,5 +1,7 @@
 <!-- products.component.html -->
-<div class="w-full h-full flex flex-col items-center justify-center">
+<div
+  class="w-full h-full flex flex-col items-center justify-center min-h-screen"
+>
   <div
     *ngIf="loading$ | async"
     class="fixed inset-0 flex items-center justify-center"
@@ -7,7 +9,7 @@
     <!-- loading spinner -->
     <span class="spinner loading loading-spinner text-primary"></span>
   </div>
-  <div class="w-full flex justify-end p-4">
+  <div *ngIf="products.length !== 0" class="w-full flex justify-end p-4">
     <!-- Container for the select-->
     <select
       #select

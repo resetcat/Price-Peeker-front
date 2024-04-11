@@ -13,10 +13,12 @@ import { NotificationModalComponent } from './pages/modals/notification-modal/no
 import { MatDialogModule } from '@angular/material/dialog';
 import { AuthInterceptor } from './guards/auth.interceptor';
 import { FooterComponent } from './pages/footer/footer.component';
+import { RegisterComponent } from './pages/register/register.component';
 
 const routes: Routes = [
   { path: '', component: ProductsComponent },
   { path: 'login', component: LoginComponent },
+  { path: 'register', component: RegisterComponent },
 ];
 
 @NgModule({
@@ -27,6 +29,7 @@ const routes: Routes = [
     LoginComponent,
     NotificationModalComponent,
     FooterComponent,
+    RegisterComponent,
   ],
   imports: [
     BrowserModule,

@@ -31,12 +31,13 @@
       d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
     />
   </svg>
-  <span>Login successful!</span>
+  <span>register successful!</span>
 </div>
 
 <div class="flex items-center justify-center min-h-screen">
   <div class="p-6 m-4 bg-base-200 shadow-md rounded-lg w-full max-w-sm">
-    <form (ngSubmit)="login()" class="space-y-4">
+    <form (ngSubmit)="submit()" #registerForm="ngForm" class="space-y-4">
+      <!-- Username Field -->
       <div>
         <label class="label">
           <span class="label-text">Username</span>
@@ -45,11 +46,13 @@
           type="text"
           [(ngModel)]="username"
           name="username"
+          #usernameField="ngModel"
           class="input input-bordered w-full"
           placeholder="Username"
           required
         />
       </div>
+      <!-- Password Field -->
       <div>
         <label class="label">
           <span class="label-text">Password</span>
@@ -58,13 +61,36 @@
           type="password"
           [(ngModel)]="password"
           name="password"
+          #passwordField="ngModel"
           class="input input-bordered w-full"
           placeholder="Password"
           required
         />
       </div>
+      <!-- Repeat Password Field -->
+      <div>
+        <label class="label">
+          <span class="label-text">Repeat password</span>
+        </label>
+        <input
+          type="password"
+          [(ngModel)]="repeatedPassword"
+          name="repeatPassword"
+          #repeatPasswordField="ngModel"
+          class="input input-bordered w-full"
+          placeholder="repeat password"
+          required
+        />
+      </div>
+      <!-- Submit Button -->
       <div class="py-5">
-        <button type="submit" class="btn btn-primary w-full">Login</button>
+        <button
+          type="submit"
+          class="btn btn-primary w-full"
+          [disabled]="registerForm.invalid || password !== repeatedPassword"
+        >
+          Register
+        </button>
       </div>
     </form>
   </div>

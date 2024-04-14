@@ -12,10 +12,14 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NotificationModalComponent } from './pages/modals/notification-modal/notification-modal.component';
 import { MatDialogModule } from '@angular/material/dialog';
 import { AuthInterceptor } from './guards/auth.interceptor';
+import { FooterComponent } from './pages/footer/footer.component';
+import { RegisterComponent } from './pages/register/register.component';
+import { TelegramInsctructionComponent } from './pages/modals/telegram-insctruction/telegram-insctruction.component';
 
 const routes: Routes = [
   { path: '', component: ProductsComponent },
-  { path: 'admin/login', component: LoginComponent },
+  { path: 'login', component: LoginComponent },
+  { path: 'register', component: RegisterComponent },
 ];
 
 @NgModule({
@@ -25,6 +29,9 @@ const routes: Routes = [
     ProductsComponent,
     LoginComponent,
     NotificationModalComponent,
+    FooterComponent,
+    RegisterComponent,
+    TelegramInsctructionComponent,
   ],
   imports: [
     BrowserModule,

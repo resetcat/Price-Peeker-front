@@ -1,0 +1,30 @@
+<!-- Wrapper for positioning and initializing modal state -->
+<div class="modal modal-open" (click)="closeDialog()">
+  <div class="modal-box" (click)="$event.stopPropagation()">
+    <h3 class="font-bold text-lg py-3">
+      Paziņojumu iestatīšana, izmantojot Telegram
+    </h3>
+    <p class="py-1">
+      Tikai daži vienkārši soļi, lai sāktu darbu ar mūsu Telegram botu:
+    </p>
+    <ul class="list-disc pl-5">
+      <li>
+        Meklējiet mūsu botu Telegram:
+        <strong>@price-peeker-notification</strong>.
+      </li>
+      <li>Sāciet sarunu, nospiežot pogu 'Start' tērzēšanas interfeisā.</li>
+      <li>
+        Saistiet savu PricePeeker kontu, nosūtot šādu ziņu:
+        <code>/register jūsu_lietotājvārds</code> (aizstājiet
+        <em>"jūsu_lietotājvārds"</em> ar jūsu faktisko lietotājvārdu).
+      </li>
+      <li>
+        Ja viss izdarīts pareizi, bots atbildēs ar "User added successfully", un
+        tagad jūs saņemsiet paziņojumus par izvēlētajām cenu izmaiņām.
+      </li>
+    </ul>
+    <div class="modal-action">
+      <button class="btn" (click)="closeDialog()">Aizvērt</button>
+    </div>
+  </div>
+</div>

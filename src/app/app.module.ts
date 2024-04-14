@@ -14,6 +14,7 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { AuthInterceptor } from './guards/auth.interceptor';
 import { FooterComponent } from './pages/footer/footer.component';
 import { RegisterComponent } from './pages/register/register.component';
+import { TelegramInsctructionComponent } from './pages/modals/telegram-insctruction/telegram-insctruction.component';
 
 const routes: Routes = [
   { path: '', component: ProductsComponent },
@@ -30,6 +31,7 @@ const routes: Routes = [
     NotificationModalComponent,
     FooterComponent,
     RegisterComponent,
+    TelegramInsctructionComponent,
   ],
   imports: [
     BrowserModule,

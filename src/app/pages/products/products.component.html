@@ -9,7 +9,10 @@
     <!-- loading spinner -->
     <span class="spinner loading loading-spinner text-primary"></span>
   </div>
-  <div *ngIf="products.length !== 0" class="w-full flex justify-end p-4">
+  <div
+    *ngIf="products.length !== 0 && !(loading$ | async)"
+    class="w-full flex justify-end p-4"
+  >
     <!-- Container for the select-->
     <select
       #select

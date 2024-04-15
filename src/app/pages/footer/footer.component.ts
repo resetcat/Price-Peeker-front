@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { TelegramInsctructionComponent } from '../modals/telegram-insctruction/telegram-insctruction.component';
+import { NotificationModalComponent } from '../modals/notification-modal/notification-modal.component';
 
 @Component({
   selector: 'app-footer',
@@ -14,5 +15,9 @@ export class FooterComponent {
     this.dialog.open(TelegramInsctructionComponent, {
       width: '250px',
     });
+  }
+
+  openNotifications() {
+    this.dialog.open(NotificationModalComponent, {});
   }
 }

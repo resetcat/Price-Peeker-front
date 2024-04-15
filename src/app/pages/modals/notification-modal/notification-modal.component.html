@@ -3,7 +3,7 @@
   class="flex flex-col bg-base-100 md:flex-row h-screen md:h-fit overflow-y-auto"
 >
   <!-- Notification window -->
-  <div class="card w-fit md:w-56 shadow-xl m-4">
+  <div *ngIf="data" class="card w-fit md:w-56 shadow-xl m-4">
     <figure class="md:h-56 md:w-56 flex items-center justify-center">
       <img
         src="{{ data.imgURL }}"
@@ -79,7 +79,10 @@
   </div>
 
   <!-- Table container -->
-  <div class="flex flex-col w-full md:ml-4 overflow-x-auto">
+  <div
+    *ngIf="!errorMessage"
+    class="flex flex-col w-full md:ml-4 overflow-x-auto"
+  >
     <table class="min-w-full leading-normal">
       <thead>
         <tr>
@@ -154,5 +157,8 @@
         </tr>
       </tbody>
     </table>
+  </div>
+  <div *ngIf="errorMessage" class="alert alert-danger">
+    {{ errorMessage }}
   </div>
 </div>

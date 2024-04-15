@@ -11,6 +11,7 @@ import { NotificationService } from 'src/app/services/notification.service';
 })
 export class NotificationModalComponent implements OnInit {
   notifications: NotificationDTO[] = [];
+  errorMessage: string = '';
   constructor(
     public dialogRef: MatDialogRef<NotificationModalComponent>,
     @Inject(MAT_DIALOG_DATA) public data: ProductDto,
@@ -26,8 +27,16 @@ export class NotificationModalComponent implements OnInit {
   }
 
   fetchNotifications(): void {
-    this.notificationService.getNotifications().subscribe((notifications) => {
-      this.notifications = notifications;
+    this.notificationService.getNotifications().subscribe({
+      next: (notifications) => {
+        this.notifications = notifications;
+      },
+      error: (err) => {
+        console.error(err);
+        if (err.status === 401) {
+          this.errorMessage = 'Please log in to view notifications.';
+        }
+      },
     });
   }
 

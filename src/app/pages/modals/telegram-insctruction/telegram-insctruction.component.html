@@ -1,4 +1,3 @@
-<!-- Wrapper for positioning and initializing modal state -->
 <div class="modal modal-open" (click)="closeDialog()">
   <div class="modal-box" (click)="$event.stopPropagation()">
     <h3 class="font-bold text-lg py-3">
@@ -9,10 +8,20 @@
     </p>
     <ul class="list-disc pl-5">
       <li>
-        Meklējiet mūsu botu Telegram:
-        <strong>@price-peeker-notification</strong>.
+        Pievienojieties mūsu botam tieši, noklikšķinot uz šīs saites:
+        <a
+          class="text-cyan-700"
+          href="https://t.me/price_peeker_bot"
+          target="_blank"
+          ><strong>@price-peeker-bot</strong></a
+        >
+        un sekojot instrukcijām
       </li>
-      <li>Sāciet sarunu, nospiežot pogu 'Start' tērzēšanas interfeisā.</li>
+      <li>
+        Vai arī meklējiet mūsu botu Telegram, izmantojot šo lietotājvārdu:
+        <strong>@price_peeker_bot</strong>, un sāciet sarunu, nospiežot pogu
+        'Start'.
+      </li>
       <li>
         Saistiet savu PricePeeker kontu, nosūtot šādu ziņu:
         <code>/register jūsu_lietotājvārds</code> (aizstājiet

@@ -176,10 +176,14 @@ export class ProductsComponent implements OnInit {
 
     switch (value) {
       case 'priceAsc':
-        this.products = this.sortBy('originalPrice', true);
+        this.products = [...this.products].sort(
+          (a, b) => this.getEffectivePrice(a) - this.getEffectivePrice(b)
+        );
         break;
       case 'priceDesc':
-        this.products = this.sortBy('originalPrice', false);
+        this.products = [...this.products].sort(
+          (a, b) => this.getEffectivePrice(b) - this.getEffectivePrice(a)
+        );
         break;
       case 'discount':
         this.products = this.sortBy('discount', false);
@@ -194,6 +198,9 @@ export class ProductsComponent implements OnInit {
         this.products = [...this.defaultProducts];
         break;
     }
+  }
+  private getEffectivePrice(p: ProductDto): number {
+    return p.discountedPrice != null ? p.discountedPrice : p.originalPrice;
   }
 
   sortBy(key: string, isAsc: boolean): any[] {

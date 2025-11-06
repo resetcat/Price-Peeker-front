@@ -41,8 +41,8 @@ export class NotificationModalComponent implements OnInit {
   }
 
   addNotification(product: ProductDto) {
-    if (this.notifications.length >= 5) {
-      alert('You cannot add more than 5 notifications.');
+    if (this.notifications.length >= 20) {
+      alert('You cannot add more than 20 notifications.');
       return;
     }
     this.notificationService.addNotification(product).subscribe((response) => {

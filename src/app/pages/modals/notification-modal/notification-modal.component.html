@@ -1,164 +1,183 @@
-<!-- Container for both the notification window and the table -->
+<!-- Product details (left) and the user's notifications (right) -->
 <div
-  class="flex flex-col bg-base-100 md:flex-row h-screen md:h-fit overflow-y-auto"
+  class="flex flex-col md:flex-row gap-6 p-4 md:p-6 bg-base-100 max-h-[90vh] overflow-y-auto"
 >
-  <!-- Notification window -->
-  <div *ngIf="data" class="card w-fit md:w-56 shadow-xl m-4">
-    <figure class="md:h-56 md:w-56 flex items-center justify-center">
+  <!-- Product column -->
+  <div class="flex flex-col gap-4 w-full md:w-80 shrink-0">
+    <div class="flex gap-4">
       <img
         src="{{ data.imgURL }}"
         alt="{{ data.name }}"
-        class="object-cover w-full h-full bord rounded-2xl"
+        class="w-24 h-24 md:w-28 md:h-28 shrink-0 object-contain bg-white rounded-2xl"
       />
-    </figure>
-    <div class="card-body flex flex-col justify-between">
-      <!-- data Name -->
-      <h2
-        [class]="
-          data.originalPrice
-            ? 'text-sm md:text-lg card-title'
-            : 'text-sm md:text-lg card-title line-through text-gray-400'
-        "
-      >
-        {{ data.name }}
-      </h2>
+      <div class="flex flex-col gap-1 min-w-0">
+        <!-- Product Name -->
+        <h2
+          [class]="
+            data.originalPrice
+              ? 'text-sm md:text-lg font-bold'
+              : 'text-sm md:text-lg font-bold line-through text-gray-400'
+          "
+        >
+          {{ data.name }}
+        </h2>
 
-      <!-- Discount Badge -->
-      <div
-        *ngIf="data.discount"
-        class="badge badge-secondary text-[12px] md:text-sm"
-      >
-        {{ data.discount }} atlaide
-      </div>
-
-      <!-- Prices and Price Per Unit or Out of Stock Message -->
-      <div *ngIf="data.originalPrice; else outOfStock" class="flex flex-col">
-        <div class="flex flex-row items-baseline">
-          <!-- Original Price -->
-          <span
-            class="text-xs font-semibold line-through decoration-R-shop decoration-2 md:text-sm"
-            *ngIf="data.discountedPrice"
-          >
-            {{ data.originalPrice }}€
-          </span>
-          <!-- Discounted Price -->
-          <span
-            class="text-sm font-bold ml-2 md:text-lg"
-            *ngIf="data.discountedPrice"
-          >
-            {{ data.discountedPrice }}€
-          </span>
-          <!-- Display original price if there is no discount -->
-          <span
-            class="text-sm font-bold md:text-lg"
-            *ngIf="!data.discountedPrice"
-          >
-            {{ data.originalPrice }}€
-          </span>
+        <!-- Discount Badge -->
+        <div
+          *ngIf="data.discount"
+          class="badge badge-secondary text-[12px] md:text-sm"
+        >
+          {{ data.discount }} atlaide
         </div>
-        <div class="flex justify-between">
+
+        <!-- Prices and Price Per Unit or Out of Stock Message -->
+        <div *ngIf="data.originalPrice; else outOfStock" class="flex flex-col">
+          <div class="flex flex-row items-baseline">
+            <!-- Original Price -->
+            <span
+              class="text-xs font-semibold line-through decoration-R-shop decoration-2 md:text-sm"
+              *ngIf="data.discountedPrice"
+            >
+              {{ data.originalPrice }}€
+            </span>
+            <!-- Discounted Price -->
+            <span
+              class="text-sm font-bold ml-2 md:text-lg"
+              *ngIf="data.discountedPrice"
+            >
+              {{ data.discountedPrice }}€
+            </span>
+            <!-- Display original price if there is no discount -->
+            <span
+              class="text-sm font-bold md:text-lg"
+              *ngIf="!data.discountedPrice"
+            >
+              {{ data.originalPrice }}€
+            </span>
+          </div>
           <!-- Price Per Unit -->
           <span class="text-xs text-gray-400 md:text-sm">
             {{ data.pricePerUnit }}
           </span>
         </div>
+        <!-- Out of Stock Template -->
+        <ng-template #outOfStock>
+          <div class="text-red-500 font-bold">prece nav pieejama</div>
+        </ng-template>
       </div>
-      <!-- Out of Stock Template -->
-      <ng-template #outOfStock>
-        <div class="text-center text-red-500 font-bold">prece nav pieejama</div>
-      </ng-template>
     </div>
+
     <div class="flex w-full">
-      <button class="btn btn-primary flex-grow" (click)="onNoClick()">
+      <button class="btn btn-primary btn-sm flex-grow" (click)="onNoClick()">
         Close
       </button>
-      <button class="btn btn-accent flex-grow" (click)="addNotification(data)">
+      <button
+        *ngIf="isLoggedIn"
+        class="btn btn-accent btn-sm flex-grow"
+        (click)="addNotification(data)"
+      >
         Add
       </button>
     </div>
+
+    <!-- Nutrition info -->
+    <section *ngIf="hasNutritionInfo" class="flex flex-col gap-2">
+      <h3 class="text-xs font-semibold uppercase tracking-wider">
+        Nutrition facts
+        <span
+          *ngIf="nutrition && nutrition.per"
+          class="normal-case font-normal text-gray-400"
+        >
+          per {{ nutrition.per }}
+        </span>
+      </h3>
+
+      <div *ngIf="nutritionLoading" class="flex justify-center py-4">
+        <span class="loading loading-spinner text-primary"></span>
+      </div>
+
+      <p *ngIf="nutritionError" class="text-sm text-red-500">
+        Could not load nutrition info.
+      </p>
+
+      <ng-container *ngIf="nutrition">
+        <p *ngIf="nutrition.rows.length === 0" class="text-sm text-gray-400">
+          No nutrition info available.
+        </p>
+        <table *ngIf="nutrition.rows.length > 0" class="table table-xs w-full">
+          <tbody>
+            <tr *ngFor="let row of nutrition.rows">
+              <td
+                class="first-letter:uppercase"
+                [ngClass]="{ 'pl-6 text-gray-400': row.isSubItem }"
+              >
+                {{ row.name }}
+              </td>
+              <td class="text-right whitespace-nowrap">{{ row.value }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </ng-container>
+    </section>
   </div>
 
-  <!-- Table container -->
-  <div
-    *ngIf="!errorMessage"
-    class="flex flex-col w-full md:ml-4 overflow-x-auto"
+  <!-- Notifications column -->
+  <section
+    *ngIf="isLoggedIn"
+    class="flex flex-col gap-2 w-full md:w-[36rem] min-w-0"
   >
-    <table class="min-w-full leading-normal">
-      <thead>
-        <tr>
-          <th
-            class="px-2 py-2 md:px-5 md:py-3 border-b-2 border-gray-200 bg-base-100 text-left text-xs font-semibold uppercase tracking-wider"
-          >
-            Shop
-          </th>
-          <th
-            class="px-2 py-2 md:px-5 md:py-3 border-b-2 border-gray-200 bg-base-100 text-left text-xs font-semibold uppercase tracking-wider"
-          >
-            Name
-          </th>
-          <th
-            class="px-2 py-2 md:px-5 md:py-3 border-b-2 border-gray-200 bg-base-100 text-left text-xs font-semibold uppercase tracking-wider"
-          >
-            Date
-          </th>
-          <th
-            class="px-2 py-2 md:px-5 md:py-3 border-b-2 border-gray-200 bg-base-100 text-left text-xs font-semibold uppercase tracking-wider"
-          >
-            Price
-          </th>
-          <th
-            class="px-2 py-2 md:px-5 md:py-3 border-b-2 border-gray-200 bg-base-100 text-left text-xs font-semibold uppercase tracking-wider"
-          >
-            Actions
-          </th>
-        </tr>
-      </thead>
-      <tbody>
-        <!-- Loop through notifications array -->
-        <tr *ngFor="let notification of notifications; let i = index">
-          <td
-            class="px-2 py-3 md:px-5 md:py-5 border-b border-gray-200 bg-base-100 text-xs md:text-sm"
-          >
-            <p class="whitespace-no-wrap">
-              {{ notification.shop }}
-            </p>
-          </td>
-          <td
-            class="px-2 py-3 md:px-5 md:py-5 border-b border-gray-200 bg-base-100 text-xs md:text-sm"
-          >
-            <p class="w-full max-w-[120px] md:max-w-xs truncate">
-              {{ notification.name }}
-            </p>
-          </td>
-          <td
-            class="px-2 py-3 md:px-5 md:py-5 border-b border-gray-200 bg-base-100 text-xs md:text-sm"
-          >
-            <p class="whitespace-no-wrap">
+    <h3 class="text-xs font-semibold uppercase tracking-wider">
+      My notifications ({{ notifications.length }}/{{ maxNotifications }})
+    </h3>
+
+    <div *ngIf="errorMessage" class="alert alert-error text-sm">
+      {{ errorMessage }}
+    </div>
+
+    <p
+      *ngIf="!errorMessage && notifications.length === 0"
+      class="text-sm text-gray-400"
+    >
+      No notifications yet.
+    </p>
+
+    <div
+      *ngIf="!errorMessage && notifications.length > 0"
+      class="overflow-x-auto"
+    >
+      <table class="table table-sm w-full">
+        <thead>
+          <tr>
+            <th>Shop</th>
+            <th>Name</th>
+            <th class="hidden md:table-cell">Date</th>
+            <th>Price</th>
+            <th><span class="sr-only">Actions</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let notification of notifications; let i = index">
+            <td class="whitespace-nowrap">{{ notification.shop }}</td>
+            <td>
+              <p
+                class="max-w-[120px] md:max-w-[14rem] truncate"
+                [title]="notification.name"
+              >
+                {{ notification.name }}
+              </p>
+            </td>
+            <td class="hidden md:table-cell whitespace-nowrap">
               {{ notification.date | date : "dd.MM.yyyy" }}
-            </p>
-          </td>
-          <td
-            class="px-2 py-3 md:px-5 md:py-5 border-b border-gray-200 bg-base-100 text-xs md:text-sm"
-          >
-            <p class="whitespace-no-wrap">
-              {{ notification.price }}
-            </p>
-          </td>
-          <td
-            class="px-2 py-3 md:px-5 md:py-5 border-b border-gray-200 bg-base-100 text-xs md:text-sm flex justify-center md:justify-start"
-          >
-            <button
-              class="btn btn-red-500 text-xs md:text-sm"
-              (click)="deleteNotification(i)"
-            >
-              Delete
-            </button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-  <div *ngIf="errorMessage" class="alert alert-danger">
-    {{ errorMessage }}
-  </div>
+            </td>
+            <td class="whitespace-nowrap">{{ notification.price }}</td>
+            <td class="text-right">
+              <button class="btn btn-xs" (click)="deleteNotification(i)">
+                Delete
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
 </div>

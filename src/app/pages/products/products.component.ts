@@ -133,9 +133,10 @@ export class ProductsComponent implements OnInit {
   }
 
   onImageClick(item: ProductDto) {
-    if (this.isLoggedIn) {
+    if (this.isLoggedIn || this.productService.hasNutritionInfo(item)) {
       this.dialog.open(NotificationModalComponent, {
         data: item,
+        maxWidth: '95vw',
       });
     }
   }

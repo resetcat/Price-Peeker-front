@@ -7,4 +7,5 @@ export interface ProductDto {
   discountedPrice?: number;
   pricePerUnit: string;
   cardOwnerOnly?: boolean;
+  productCode?: string;
 }

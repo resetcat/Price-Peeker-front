@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { SearchDto, SearchState } from '../models/search.dto';
-import { BehaviorSubject, catchError } from 'rxjs';
+import { BehaviorSubject, catchError, Observable } from 'rxjs';
 import { ProductDto } from '../models/products.dto';
+import { NutritionDto } from '../models/nutrition.dto';
 import { environment } from 'src/environments/environment';
 
 @Injectable({
@@ -68,6 +69,20 @@ export class ProductsService {
         },
         complete: () => this.loading.next(false),
       });
+  }
+
+  getNutrition(product: ProductDto): Observable<NutritionDto> {
+    return this.httpClient.get<NutritionDto>(
+      `${environment.apiUrl}/nutrition`,
+      {
+        params: { shop: product.id, code: product.productCode ?? '' },
+      }
+    );
+  }
+
+  // Only Rimi (1) and Maxima (2) provide nutrition info.
+  hasNutritionInfo(product: ProductDto): boolean {
+    return (product.id === 1 || product.id === 2) && !!product.productCode;
   }
 
   urlFixForSnV(data: ProductDto[]) {

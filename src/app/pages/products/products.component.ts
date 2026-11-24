@@ -35,6 +35,14 @@ export class ProductsComponent implements OnInit, OnDestroy {
   isLoggedIn: boolean = false;
 
   sortValue: SortOption = 'default';
+  readonly sortOptions: { value: SortOption; label: string }[] = [
+    { value: 'default', label: 'pēc noklusējuma' },
+    { value: 'priceAsc', label: 'zemākā cena vispirms' },
+    { value: 'priceDesc', label: 'augstākā cena vispirms' },
+    { value: 'discount', label: 'ar akcijām vispirms' },
+    { value: 'pricePerUnitAsc', label: 'zemākā cena par kg/gb' },
+    { value: 'pricePerUnitDesc', label: 'augstākā cena par kg/gb' },
+  ];
   shopFilter: number | null = null;
   discountOnly = false;
   shopsInResults: ShopInfo[] = [];

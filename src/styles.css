@@ -100,11 +100,17 @@
 
   /* Chips, tags, buttons */
   .pp-chip {
-    @apply inline-flex h-9 items-center gap-2 rounded-full border bg-base-100 px-3.5 text-[13px] font-semibold transition-colors;
+    @apply inline-flex h-9 shrink-0 items-center gap-2 whitespace-nowrap rounded-full border bg-base-100 px-3.5 text-[13px] font-semibold transition-colors;
     border-color: var(--pp-line);
   }
   .pp-chip[aria-pressed='true'] {
     @apply border-base-content bg-base-content text-base-200;
+  }
+  .pp-scroll-x {
+    scrollbar-width: none;
+  }
+  .pp-scroll-x::-webkit-scrollbar {
+    display: none;
   }
   .pp-shop-tag {
     @apply inline-flex h-5 items-center whitespace-nowrap rounded-full px-2 text-[11px] font-bold leading-none;

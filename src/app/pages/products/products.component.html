@@ -33,39 +33,49 @@
     >
       <div *ngIf="context$ | async as context" class="min-w-0">
         <h1
-          class="font-display text-2xl font-bold leading-tight tracking-tight lg:text-[30px] lg:leading-9"
+          class="font-display text-xl font-bold leading-tight tracking-tight lg:text-[30px] lg:leading-9"
         >
           <ng-container *ngIf="context.kind === 'search'; else categoryTitle"
             >Rezultāti: „{{ context.label }}”</ng-container
           >
           <ng-template #categoryTitle>{{ context.label }}</ng-template>
         </h1>
-        <p class="mt-1 text-sm text-muted">{{ resultSummary }}</p>
+        <p class="mt-0.5 text-[13px] text-muted lg:mt-1 lg:text-sm">{{ resultSummary }}</p>
       </div>
-      <label class="flex items-center gap-2.5 text-[13px] text-muted">
+      <!-- Desktop sort (mobile has it in the filter row below) -->
+      <label class="hidden items-center gap-2.5 text-[13px] text-muted lg:flex">
         Kārtot
         <select
           class="select select-bordered select-sm h-10 rounded-xl border-line bg-base-100 text-sm font-medium text-base-content"
           [(ngModel)]="sortValue"
           (ngModelChange)="applyView()"
         >
-          <option value="default">pēc noklusējuma</option>
-          <option value="priceAsc">zemākā cena vispirms</option>
-          <option value="priceDesc">augstākā cena vispirms</option>
-          <option value="discount">ar akcijām vispirms</option>
-          <option value="pricePerUnitAsc">zemākā cena par kg/gb</option>
-          <option value="pricePerUnitDesc">augstākā cena par kg/gb</option>
+          <option *ngFor="let option of sortOptions" [value]="option.value">{{ option.label }}</option>
         </select>
       </label>
     </div>
 
-    <!-- Filters -->
+    <!-- Filters: one swipeable row on mobile, wrapping on desktop -->
     <div
       *ngIf="defaultProducts.length > 0 && !(loading$ | async)"
-      class="flex flex-wrap gap-2"
+      class="pp-scroll-x -mx-4 flex gap-2 overflow-x-auto px-4 lg:mx-0 lg:flex-wrap lg:overflow-visible lg:px-0"
       role="group"
       aria-label="Filtri"
     >
+      <label class="relative shrink-0 lg:hidden">
+        <span class="sr-only">Kārtot</span>
+        <app-icon
+          name="sort"
+          class="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2"
+        ></app-icon>
+        <select
+          class="select select-sm h-9 min-h-0 rounded-full border-line bg-base-100 pl-9 text-[13px] font-semibold"
+          [(ngModel)]="sortValue"
+          (ngModelChange)="applyView()"
+        >
+          <option *ngFor="let option of sortOptions" [value]="option.value">{{ option.label }}</option>
+        </select>
+      </label>
       <button
         type="button"
         class="pp-chip"

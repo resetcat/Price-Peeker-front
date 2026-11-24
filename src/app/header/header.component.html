@@ -1,312 +1,188 @@
-<!-- Mobile Layout: Visible on small screens -->
-<header class="bg-primary sticky top-0 z-10 shadow sm:hidden">
-  <!-- Container to align items -->
-  <div class="container mx-auto p-4">
-    <!-- Grid layout for logo and icons -->
-    <div class="grid grid-cols-2 items-center mb-4">
-      <!-- Logo -->
-      <a href="/">
-        <img class="w-40 h-auto" src="/assets/images/logo.svg" alt="Logo" />
-      </a>
+<header class="sticky top-0 z-30 bg-primary text-primary-content shadow-sm">
+  <div
+    class="pp-container flex flex-wrap items-center gap-3 py-3 lg:flex-nowrap lg:gap-5"
+  >
+    <!-- Logo -->
+    <a routerLink="/" class="order-1 shrink-0" aria-label="Price Peeker — sākums">
+      <span class="pp-logo w-32 lg:w-[150px]"></span>
+    </a>
 
-      <!-- Additional Links or Icons -->
-      <div class="flex justify-end">
-        <!-- Shop Type Buttons -->
-        <div class="flex gap-2">
-          <button
-            class="btn"
-            [ngClass]="{
-              'btn-accent': currentShopType === 'grocery',
-              'btn-default': currentShopType !== 'grocery',
-              'p-2 rounded-xl': true
-            }"
-            (click)="selectShopType('grocery')"
-          >
-            <img
-              src="/assets/images/grocery.svg"
-              class="'w-10 h-10 -translate-y-1"
-              alt="Search"
-            />
-          </button>
-          <button
-            class="btn"
-            [ngClass]="{
-              'btn-accent': currentShopType === 'spirit',
-              'btn-default': currentShopType !== 'spirit',
-              'p-2 rounded-xl': true
-            }"
-            (click)="selectShopType('spirit')"
-          >
-            <img
-              src="/assets/images/bottle.svg"
-              class="'w-10 h-10 -translate-y-1"
-              alt="Search"
-            />
-          </button>
-        </div>
-
-        <label class="swap swap-rotate pl-2">
-          <!-- this hidden checkbox controls the state -->
-          <input
-            type="checkbox"
-            [checked]="isDarkTheme"
-            (change)="toggleTheme()"
-          />
-
-          <!-- sun icon -->
-          <svg
-            class="swap-on fill-current w-10 h-10"
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 24 24"
-          >
-            <path
-              d="M21.64,13a1,1,0,0,0-1.05-.14,8.05,8.05,0,0,1-3.37.73A8.15,8.15,0,0,1,9.08,5.49a8.59,8.59,0,0,1,.25-2A1,1,0,0,0,8,2.36,10.14,10.14,0,1,0,22,14.05,1,1,0,0,0,21.64,13Zm-9.5,6.69A8.14,8.14,0,0,1,7.08,5.22v.27A10.15,10.15,0,0,0,17.22,15.63a9.79,9.79,0,0,0,2.1-.22A8.11,8.11,0,0,1,12.14,19.73Z"
-            />
-          </svg>
-
-          <!-- moon icon -->
-          <svg
-            class="swap-off fill-current w-10 h-10"
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 24 24"
-          >
-            <path
-              d="M5.64,17l-.71.71a1,1,0,0,0,0,1.41,1,1,0,0,0,1.41,0l.71-.71A1,1,0,0,0,5.64,17ZM5,12a1,1,0,0,0-1-1H3a1,1,0,0,0,0,2H4A1,1,0,0,0,5,12Zm7-7a1,1,0,0,0,1-1V3a1,1,0,0,0-2,0V4A1,1,0,0,0,12,5ZM5.64,7.05a1,1,0,0,0,.7.29,1,1,0,0,0,.71-.29,1,1,0,0,0,0-1.41l-.71-.71A1,1,0,0,0,4.93,6.34Zm12,.29a1,1,0,0,0,.7-.29l.71-.71a1,1,0,1,0-1.41-1.41L17,5.64a1,1,0,0,0,0,1.41A1,1,0,0,0,17.66,7.34ZM21,11H20a1,1,0,0,0,0,2h1a1,1,0,0,0,0-2Zm-9,8a1,1,0,0,0-1,1v1a1,1,0,0,0,2,0V20A1,1,0,0,0,12,19ZM18.36,17A1,1,0,0,0,17,18.36l.71.71a1,1,0,0,0,1.41,0,1,1,0,0,0,0-1.41ZM12,6.5A5.5,5.5,0,1,0,17.5,12,5.51,5.51,0,0,0,12,6.5Zm0,9A3.5,3.5,0,1,1,15.5,12,3.5,3.5,0,0,1,12,15.5Z"
-            />
-          </svg>
-        </label>
-      </div>
+    <!-- Store type switch: Pārtika / Alkohols (/ Aptiekas) — from shops.config.ts -->
+    <div
+      class="pp-seg order-4 w-full lg:order-2 lg:w-auto"
+      role="group"
+      aria-label="Veikalu veids"
+    >
+      <button
+        *ngFor="let type of shopTypes"
+        type="button"
+        class="pp-seg-btn"
+        [attr.aria-pressed]="type.id === currentShopType"
+        (click)="selectShopType(type.id)"
+      >
+        <app-icon [name]="type.icon" class="h-[18px] w-[18px]"></app-icon>
+        {{ type.label }}
+      </button>
     </div>
-    <!-- Search Bar -->
-    <div class="search-container flex flex-row w-full gap-1">
-      <label for="my-drawer" class="btn btn-square btn-ghost">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          class="h-5 w-5"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M4 6h16M4 12h16m-7 6h7"
-          />
-        </svg>
-      </label>
+
+    <!-- Search -->
+    <form
+      role="search"
+      class="pp-search order-3 w-full lg:order-3 lg:w-auto lg:flex-1"
+      (ngSubmit)="getProducts()"
+    >
+      <app-icon name="search" class="h-5 w-5 opacity-60"></app-icon>
+      <label for="search" class="sr-only">Meklēt preces</label>
       <input
         #searchInput
+        id="search"
+        name="search"
         type="text"
+        inputmode="search"
+        enterkeyhint="search"
+        autocomplete="off"
         placeholder="meklēt..."
-        class="input input-bordered input-secondary p-2 rounded-xl w-full"
         [(ngModel)]="searchQuery"
-        (keyup.enter)="getProducts(searchQuery); searchInput.blur()"
-        [disabled]="(loading$ | async)!"
+        [disabled]="(loading$ | async) === true"
       />
       <button
+        *ngIf="searchQuery"
         type="button"
-        class="btn btn-circle btn-ghost absolute right-[78px] top-18"
-        (click)="searchQuery = ''"
-        [disabled]="loading$ | async"
+        class="pp-icon-btn h-10 w-10 opacity-60 hover:opacity-100"
+        aria-label="Notīrīt meklēšanu"
+        (click)="clearSearch()"
       >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          class="h-5 w-5"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M6 18L18 6M6 6l12 12"
-          />
-        </svg>
+        <app-icon name="x" class="h-[18px] w-[18px]"></app-icon>
       </button>
       <button
         type="submit"
-        (click)="getProducts(searchQuery)"
-        class="btn btn-accent p-2 rounded-xl disabled:btn-neutral"
-        [disabled]="loading$ | async"
+        class="btn btn-accent h-10 min-h-0 rounded-full px-4 text-sm font-bold sm:px-5"
+        aria-label="Meklēt"
+        [disabled]="(loading$ | async) === true"
       >
-        <img
-          src="/assets/images/search.svg"
-          class="'w-10 h-10 -translate-y-1"
-          alt="Search"
-        />
+        <span *ngIf="(loading$ | async) === true" class="loading loading-spinner loading-xs"></span>
+        <app-icon name="search" [stroke]="2.4" class="h-[18px] w-[18px] sm:hidden"></app-icon>
+        <span class="hidden sm:inline">Meklēt</span>
       </button>
+    </form>
+
+    <!-- Actions -->
+    <div class="order-2 ml-auto flex items-center gap-2 lg:order-4">
+      <button
+        type="button"
+        class="pp-hdr-btn"
+        [attr.aria-label]="isDarkTheme ? 'Ieslēgt gaišo režīmu' : 'Ieslēgt tumšo režīmu'"
+        (click)="toggleTheme()"
+      >
+        <app-icon [name]="isDarkTheme ? 'sun' : 'moon'" class="h-5 w-5"></app-icon>
+      </button>
+      <ng-container *ngIf="isLoggedIn$ | async; else loggedOut">
+        <button
+          type="button"
+          class="pp-hdr-btn hidden lg:inline-flex"
+          aria-label="Mani paziņojumi"
+          (click)="openNotifications()"
+        >
+          <app-icon name="bell" class="h-5 w-5"></app-icon>
+        </button>
+        <button
+          type="button"
+          class="pp-hdr-btn hidden lg:inline-flex"
+          aria-label="Iziet"
+          (click)="logout()"
+        >
+          <app-icon name="logout" class="h-5 w-5"></app-icon>
+        </button>
+      </ng-container>
+      <ng-template #loggedOut>
+        <a routerLink="/login" class="pp-login hidden lg:inline-flex">
+          <app-icon name="user" class="h-[18px] w-[18px]"></app-icon>
+          Ienākt
+        </a>
+      </ng-template>
     </div>
   </div>
 </header>
 
-<div class="drawer">
+<!-- Mobile: bottom navigation -->
+<nav
+  class="fixed inset-x-0 bottom-0 z-30 grid h-[68px] grid-cols-4 border-t border-card-line bg-base-100 lg:hidden"
+  aria-label="Galvenā navigācija"
+>
+  <button
+    type="button"
+    class="pp-tab"
+    [attr.aria-current]="router.url === '/' && !drawerOpen ? 'page' : null"
+    (click)="focusSearch()"
+  >
+    <app-icon name="search" class="h-[22px] w-[22px]"></app-icon>
+    Meklēt
+  </button>
+  <button
+    type="button"
+    class="pp-tab"
+    [attr.aria-current]="drawerOpen ? 'page' : null"
+    (click)="drawerOpen = true"
+  >
+    <app-icon name="grid" class="h-[22px] w-[22px]"></app-icon>
+    Kategorijas
+  </button>
+  <ng-container *ngIf="isLoggedIn$ | async; else tabsLoggedOut">
+    <button type="button" class="pp-tab" (click)="openNotifications()">
+      <app-icon name="bell" class="h-[22px] w-[22px]"></app-icon>
+      Paziņojumi
+    </button>
+    <button type="button" class="pp-tab" (click)="logout()">
+      <app-icon name="logout" class="h-[22px] w-[22px]"></app-icon>
+      Iziet
+    </button>
+  </ng-container>
+  <ng-template #tabsLoggedOut>
+    <a routerLink="/login" class="pp-tab">
+      <app-icon name="bell" class="h-[22px] w-[22px]"></app-icon>
+      Paziņojumi
+    </a>
+    <a
+      routerLink="/login"
+      class="pp-tab"
+      [attr.aria-current]="router.url === '/login' || router.url === '/register' ? 'page' : null"
+    >
+      <app-icon name="user" class="h-[22px] w-[22px]"></app-icon>
+      Ienākt
+    </a>
+  </ng-template>
+</nav>
+
+<!-- Mobile: category drawer (desktop shows categories in the sidebar) -->
+<div class="drawer lg:hidden">
   <input
-    id="my-drawer"
+    id="category-drawer"
     type="checkbox"
     class="drawer-toggle"
     [(ngModel)]="drawerOpen"
   />
-  <div class="drawer-content">
-    <!-- Desktop Layout: Visible on medium screens and larger -->
-    <header class="bg-primary sticky top-0 z-10 shadow hidden sm:flex">
-      <!-- Container to align items next to each other -->
-      <div class="container mx-auto flex items-center justify-between p-4">
-        <label for="my-drawer" class="btn btn-square btn-ghost">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="h-5 w-5"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M4 6h16M4 12h16m-7 6h7"
-            />
-          </svg>
-        </label>
-        <!-- Logo -->
-        <a href="/">
-          <img class="w-40 h-auto" src="/assets/images/logo.svg" alt="Logo" />
-        </a>
-
-        <!-- Shop Type Buttons -->
-        <div class="flex gap-2">
-          <button
-            class="btn"
-            [ngClass]="{
-              'btn-accent': currentShopType === 'grocery',
-              'btn-default': currentShopType !== 'grocery',
-              'p-2 rounded-xl': true
-            }"
-            (click)="selectShopType('grocery')"
-          >
-            <img
-              src="/assets/images/grocery.svg"
-              class="'w-10 h-10 -translate-y-1"
-              alt="Search"
-            />
-          </button>
-          <button
-            class="btn"
-            [ngClass]="{
-              'btn-accent': currentShopType === 'spirit',
-              'btn-default': currentShopType !== 'spirit',
-              'p-2 rounded-xl': true
-            }"
-            (click)="selectShopType('spirit')"
-          >
-            <img
-              src="/assets/images/bottle.svg"
-              class="'w-10 h-10 -translate-y-1"
-              alt="Search"
-            />
-          </button>
-        </div>
-
-        <!-- Search Bar -->
-        <div
-          class="relative flex flex-row items-center w-full md:w-2/3 lg:w-1/2 gap-1"
+  <div class="drawer-content"></div>
+  <div class="drawer-side z-40">
+    <label
+      for="category-drawer"
+      class="drawer-overlay"
+      aria-label="Aizvērt kategorijas"
+    ></label>
+    <div class="flex min-h-full w-80 max-w-[85vw] flex-col gap-4 bg-base-200 p-4">
+      <div class="flex items-center justify-between">
+        <h2 class="font-display text-xl font-bold">Kategorijas</h2>
+        <label
+          for="category-drawer"
+          class="pp-icon-btn cursor-pointer bg-base-100"
+          aria-label="Aizvērt"
         >
-          <input
-            #searchInput
-            type="text"
-            placeholder="meklēt..."
-            class="input input-bordered input-secondary p-2 rounded-xl w-full"
-            [(ngModel)]="searchQuery"
-            (keyup.enter)="getProducts(searchQuery); searchInput.blur()"
-            [disabled]="(loading$ | async)!"
-          />
-          <button
-            type="button"
-            class="btn btn-circle btn-ghost absolute right-[71px] top-18"
-            (click)="searchQuery = ''"
-            [disabled]="loading$ | async"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="h-5 w-5"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M6 18L18 6M6 6l12 12"
-              />
-            </svg>
-          </button>
-          <button
-            type="submit"
-            (click)="getProducts(searchQuery)"
-            class="btn btn-accent p-2 rounded-xl disabled:btn-neutral"
-            [disabled]="loading$ | async"
-          >
-            <img
-              src="/assets/images/search.svg"
-              class="'w-10 h-10 -translate-y-1"
-              alt="Search"
-            />
-          </button>
-        </div>
-        <!-- Additional Links or Icons -->
-        <label class="swap swap-rotate pl-2">
-          <!-- this hidden checkbox controls the state -->
-          <input
-            type="checkbox"
-            [checked]="isDarkTheme"
-            (change)="toggleTheme()"
-          />
-
-          <!-- sun icon -->
-          <svg
-            class="swap-on fill-current w-10 h-10"
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 24 24"
-          >
-            <path
-              d="M21.64,13a1,1,0,0,0-1.05-.14,8.05,8.05,0,0,1-3.37.73A8.15,8.15,0,0,1,9.08,5.49a8.59,8.59,0,0,1,.25-2A1,1,0,0,0,8,2.36,10.14,10.14,0,1,0,22,14.05,1,1,0,0,0,21.64,13Zm-9.5,6.69A8.14,8.14,0,0,1,7.08,5.22v.27A10.15,10.15,0,0,0,17.22,15.63a9.79,9.79,0,0,0,2.1-.22A8.11,8.11,0,0,1,12.14,19.73Z"
-            />
-          </svg>
-
-          <!-- moon icon -->
-          <svg
-            class="swap-off fill-current w-10 h-10"
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 24 24"
-          >
-            <path
-              d="M5.64,17l-.71.71a1,1,0,0,0,0,1.41,1,1,0,0,0,1.41,0l.71-.71A1,1,0,0,0,5.64,17ZM5,12a1,1,0,0,0-1-1H3a1,1,0,0,0,0,2H4A1,1,0,0,0,5,12Zm7-7a1,1,0,0,0,1-1V3a1,1,0,0,0-2,0V4A1,1,0,0,0,12,5ZM5.64,7.05a1,1,0,0,0,.7.29,1,1,0,0,0,.71-.29,1,1,0,0,0,0-1.41l-.71-.71A1,1,0,0,0,4.93,6.34Zm12,.29a1,1,0,0,0,.7-.29l.71-.71a1,1,0,1,0-1.41-1.41L17,5.64a1,1,0,0,0,0,1.41A1,1,0,0,0,17.66,7.34ZM21,11H20a1,1,0,0,0,0,2h1a1,1,0,0,0,0-2Zm-9,8a1,1,0,0,0-1,1v1a1,1,0,0,0,2,0V20A1,1,0,0,0,12,19ZM18.36,17A1,1,0,0,0,17,18.36l.71.71a1,1,0,0,0,1.41,0,1,1,0,0,0,0-1.41ZM12,6.5A5.5,5.5,0,1,0,17.5,12,5.51,5.51,0,0,0,12,6.5Zm0,9A3.5,3.5,0,1,1,15.5,12,3.5,3.5,0,0,1,12,15.5Z"
-            />
-          </svg>
+          <app-icon name="x" class="h-[18px] w-[18px]"></app-icon>
         </label>
       </div>
-    </header>
-    <!-- The rest of the page content goes here -->
-  </div>
-  <div class="drawer-side">
-    <label
-      for="my-drawer"
-      aria-label="close sidebar"
-      class="drawer-overlay"
-    ></label>
-    <ul class="menu p-4 w-96 bg-base-200 text-base-content mt-[80px]">
-      <li *ngFor="let category of categories">
-        <a>{{ category.name }}</a>
-        <ul *ngIf="category.categories && category.categories.length > 0">
-          <li *ngFor="let subCategory of category.categories">
-            <a (click)="categorySelect(subCategory.id)">{{
-              subCategory.name
-            }}</a>
-          </li>
-        </ul>
-      </li>
-    </ul>
+      <app-category-nav
+        [showTitle]="false"
+        (selected)="onCategorySelected()"
+      ></app-category-nav>
+    </div>
   </div>
 </div>

@@ -10,11 +10,18 @@ import { ProductsComponent } from './pages/products/products.component';
 import { LoginComponent } from './pages/login/login.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NotificationModalComponent } from './pages/modals/notification-modal/notification-modal.component';
-import { MatDialogModule } from '@angular/material/dialog';
+import {
+  MAT_DIALOG_DEFAULT_OPTIONS,
+  MatDialogConfig,
+  MatDialogModule,
+} from '@angular/material/dialog';
 import { AuthInterceptor } from './guards/auth.interceptor';
 import { FooterComponent } from './pages/footer/footer.component';
 import { RegisterComponent } from './pages/register/register.component';
 import { TelegramInsctructionComponent } from './pages/modals/telegram-insctruction/telegram-insctruction.component';
+import { IconComponent } from './shared/icon.component';
+import { CategoryNavComponent } from './shared/category-nav.component';
+import { PricePipe } from './pipes/price.pipe';
 
 const routes: Routes = [
   { path: '', component: ProductsComponent },
@@ -32,6 +39,9 @@ const routes: Routes = [
     FooterComponent,
     RegisterComponent,
     TelegramInsctructionComponent,
+    IconComponent,
+    CategoryNavComponent,
+    PricePipe,
   ],
   imports: [
     BrowserModule,
@@ -43,6 +53,16 @@ const routes: Routes = [
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
+    {
+      // Dialogs draw their own rounded card; see .pp-dialog in styles.css
+      provide: MAT_DIALOG_DEFAULT_OPTIONS,
+      useValue: {
+        ...new MatDialogConfig(),
+        panelClass: 'pp-dialog',
+        maxWidth: '95vw',
+        autoFocus: 'dialog',
+      },
+    },
   ],
   bootstrap: [AppComponent],
 })

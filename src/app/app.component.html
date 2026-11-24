@@ -1,3 +1,8 @@
-<app-header></app-header>
-<router-outlet></router-outlet>
-<app-footer></app-footer>
+<div class="flex min-h-screen flex-col">
+  <!-- "contents" keeps the sticky header sticky inside this flex column -->
+  <app-header class="contents"></app-header>
+  <main class="flex-1">
+    <router-outlet></router-outlet>
+  </main>
+  <app-footer></app-footer>
+</div>

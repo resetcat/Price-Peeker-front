@@ -12,12 +12,10 @@ export class FooterComponent {
   constructor(public dialog: MatDialog) {}
 
   openTelegramInstructions() {
-    this.dialog.open(TelegramInsctructionComponent, {
-      width: '250px',
-    });
+    this.dialog.open(TelegramInsctructionComponent);
   }
 
   openNotifications() {
-    this.dialog.open(NotificationModalComponent, {});
+    this.dialog.open(NotificationModalComponent, { data: null });
   }
 }

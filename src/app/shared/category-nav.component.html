@@ -1,0 +1,46 @@
+<nav aria-label="Kategorijas" class="pp-card flex flex-col gap-0.5 p-3">
+  <p *ngIf="showTitle" class="pp-overline px-3 pb-2 pt-1.5">Kategorijas</p>
+
+  <div *ngIf="loading" class="flex justify-center py-6">
+    <span class="loading loading-spinner text-primary"></span>
+  </div>
+  <p *ngIf="error" class="px-3 py-2 text-sm text-muted">
+    Neizdevās ielādēt kategorijas.
+  </p>
+
+  <ng-container *ngFor="let category of categories">
+    <button
+      type="button"
+      class="pp-nav-item font-semibold"
+      [attr.aria-expanded]="hasChildren(category) ? isExpanded(category) : null"
+      (click)="toggle(category)"
+    >
+      <span class="flex-1">{{ category.name }}</span>
+      <span
+        *ngIf="isSale(category)"
+        class="badge badge-secondary h-5 border-0 px-2 text-[11px] font-bold"
+        >%</span
+      >
+      <app-icon
+        *ngIf="hasChildren(category)"
+        name="chevron-down"
+        class="h-4 w-4 text-muted transition-transform"
+        [class.rotate-180]="isExpanded(category)"
+      ></app-icon>
+    </button>
+    <div
+      *ngIf="hasChildren(category) && isExpanded(category)"
+      class="flex flex-col gap-0.5 pb-1 pl-3"
+    >
+      <button
+        *ngFor="let sub of category.categories"
+        type="button"
+        class="pp-nav-sub"
+        [attr.aria-current]="sub.id === (activeId$ | async) ? 'true' : null"
+        (click)="select(sub)"
+      >
+        {{ sub.name }}
+      </button>
+    </div>
+  </ng-container>
+</nav>

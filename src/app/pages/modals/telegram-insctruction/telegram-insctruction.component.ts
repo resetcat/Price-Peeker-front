@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { NotificationModalComponent } from '../notification-modal/notification-modal.component';
+import { MatDialogRef } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-telegram-insctruction',
@@ -8,7 +7,7 @@ import { NotificationModalComponent } from '../notification-modal/notification-m
   styleUrls: ['./telegram-insctruction.component.css'],
 })
 export class TelegramInsctructionComponent {
-  constructor(public dialogRef: MatDialogRef<NotificationModalComponent>) {}
+  constructor(public dialogRef: MatDialogRef<TelegramInsctructionComponent>) {}
 
   closeDialog(): void {
     this.dialogRef.close();

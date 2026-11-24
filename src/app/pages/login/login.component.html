@@ -1,71 +1,50 @@
-<!-- Display error alert  -->
-<div *ngIf="showError" role="alert" class="alert alert-error">
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    class="stroke-current shrink-0 h-6 w-6"
-    fill="none"
-    viewBox="0 0 24 24"
-  >
-    <path
-      stroke-linecap="round"
-      stroke-linejoin="round"
-      stroke-width="2"
-      d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
-    />
-  </svg>
-  <span>{{ errorMessage }}</span>
+<div class="pointer-events-none fixed inset-x-0 top-20 z-50 flex justify-center px-4">
+  <div *ngIf="showError" role="alert" class="alert alert-error pointer-events-auto w-auto max-w-md rounded-2xl shadow-lg">
+    <app-icon name="x" class="h-5 w-5"></app-icon>
+    <span>{{ errorMessage }}</span>
+  </div>
+  <div *ngIf="showSuccess" role="alert" class="alert alert-success pointer-events-auto w-auto max-w-md rounded-2xl shadow-lg">
+    <app-icon name="user" class="h-5 w-5"></app-icon>
+    <span>Veiksmīgi pieslēdzies!</span>
+  </div>
 </div>
 
-<!-- Display success alert  -->
-<div *ngIf="showSuccess" role="alert" class="alert alert-success">
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    class="stroke-current shrink-0 h-6 w-6"
-    fill="none"
-    viewBox="0 0 24 24"
-  >
-    <path
-      stroke-linecap="round"
-      stroke-linejoin="round"
-      stroke-width="2"
-      d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-    />
-  </svg>
-  <span>Login successful!</span>
-</div>
-
-<div class="flex items-center justify-center min-h-screen">
-  <div class="p-6 m-4 bg-base-200 shadow-md rounded-lg w-full max-w-sm">
-    <form (ngSubmit)="login()" class="space-y-4">
-      <div>
-        <label class="label">
-          <span class="label-text">Username</span>
-        </label>
+<div class="flex justify-center px-4 py-12 lg:py-20">
+  <div class="pp-card w-full max-w-sm p-6 md:p-8">
+    <h1 class="font-display text-2xl font-bold">Ienākt</h1>
+    <p class="mt-1 text-sm text-muted">Lai sekotu cenām un saņemtu paziņojumus.</p>
+    <form (ngSubmit)="login()" class="mt-6 flex flex-col gap-4">
+      <div class="flex flex-col gap-1.5">
+        <label for="login-username" class="text-sm font-semibold">Lietotājvārds</label>
         <input
+          id="login-username"
           type="text"
           [(ngModel)]="username"
           name="username"
-          class="input input-bordered w-full"
-          placeholder="Username"
+          class="pp-input"
+          autocomplete="username"
           required
         />
       </div>
-      <div>
-        <label class="label">
-          <span class="label-text">Password</span>
-        </label>
+      <div class="flex flex-col gap-1.5">
+        <label for="login-password" class="text-sm font-semibold">Parole</label>
         <input
+          id="login-password"
           type="password"
           [(ngModel)]="password"
           name="password"
-          class="input input-bordered w-full"
-          placeholder="Password"
+          class="pp-input"
+          autocomplete="current-password"
           required
         />
       </div>
-      <div class="py-5">
-        <button type="submit" class="btn btn-primary w-full">Login</button>
-      </div>
+      <button type="submit" class="btn btn-accent mt-2 h-12 w-full rounded-full text-[15px] font-bold">
+        Ienākt
+      </button>
     </form>
+    <p class="mt-5 text-center text-sm text-muted">
+      Nav konta?
+      <a routerLink="/register" class="font-semibold text-link hover:underline">Reģistrējies</a>
+    </p>
   </div>
 </div>

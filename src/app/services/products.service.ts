@@ -6,6 +6,12 @@ import { ProductDto } from '../models/products.dto';
 import { NutritionDto } from '../models/nutrition.dto';
 import { environment } from 'src/environments/environment';
 
+/** What the current result list is: a search query or a category. */
+export interface ResultContext {
+  kind: 'search' | 'category';
+  label: string;
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -18,11 +24,13 @@ export class ProductsService {
   private errorSource = new BehaviorSubject<any>(null);
   error$ = this.errorSource.asObservable();
   categoryId = new BehaviorSubject<any>(null);
+  resultContext = new BehaviorSubject<ResultContext | null>(null);
 
   constructor(private httpClient: HttpClient) {}
 
   getProducts(query: string, shops: number[]) {
     this.loading.next(true); // Start loading
+    this.resultContext.next({ kind: 'search', label: query });
     const body: SearchDto = { query: query, shops: shops };
 
     this.httpClient
@@ -47,8 +55,11 @@ export class ProductsService {
       });
   }
 
-  getCategory(id: number, page: number = 1) {
+  getCategory(id: number, page: number = 1, label?: string) {
     this.loading.next(true);
+    if (label) {
+      this.resultContext.next({ kind: 'category', label });
+    }
     this.httpClient
       .get<ProductDto[]>(`${environment.apiUrl}/category?id=${id}&page=${page}`)
       .subscribe({

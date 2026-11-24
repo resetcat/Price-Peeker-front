@@ -2,3 +2,136 @@
 @import 'tailwindcss/base';
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
+
+@layer base {
+  /* The theme lives on <html>; page background is base-200, cards are base-100 */
+  html[data-theme],
+  html:not([data-theme]) {
+    @apply bg-base-200;
+  }
+  body {
+    @apply font-sans text-base-content antialiased;
+  }
+  :focus-visible {
+    outline: 2px solid var(--pp-link);
+    outline-offset: 2px;
+  }
+}
+
+@layer components {
+  .pp-container {
+    @apply mx-auto w-full max-w-page px-4 lg:px-8;
+  }
+
+  /* Logo drawn in the current text colour (dark ink on teal, white on navy) */
+  .pp-logo {
+    display: block;
+    aspect-ratio: 141 / 41;
+    background-color: currentColor;
+    -webkit-mask: url('/assets/images/logo.svg') center / contain no-repeat;
+    mask: url('/assets/images/logo.svg') center / contain no-repeat;
+  }
+
+  .pp-card {
+    @apply rounded-[20px] border bg-base-100;
+    border-color: var(--pp-card-line);
+    box-shadow: var(--pp-card-shadow);
+  }
+  .pp-overline {
+    @apply text-xs font-semibold uppercase tracking-[0.08em] text-muted;
+  }
+  .pp-price {
+    @apply font-display font-bold tabular-nums;
+  }
+  .pp-icon-btn {
+    @apply inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full transition-colors;
+  }
+
+  /* Header */
+  .pp-hdr-btn {
+    @apply pp-icon-btn;
+    background: var(--pp-hdr-btn);
+  }
+  .pp-login {
+    @apply inline-flex h-11 items-center gap-2 rounded-full px-[18px] text-sm font-semibold;
+    background: var(--pp-login-bg);
+    color: var(--pp-login-ink);
+  }
+  .pp-seg {
+    @apply flex gap-1 rounded-full p-1;
+    background: var(--pp-seg-track);
+  }
+  .pp-seg-btn {
+    @apply inline-flex h-10 flex-1 items-center justify-center gap-2 whitespace-nowrap rounded-full px-4 text-sm font-semibold transition-colors lg:flex-none;
+  }
+  .pp-seg-btn[aria-pressed='true'] {
+    background: var(--pp-seg-on);
+    color: var(--pp-seg-on-ink);
+  }
+  .pp-search {
+    @apply flex h-12 items-center gap-2 rounded-full pl-4 pr-1;
+    background: var(--pp-search-bg);
+    border: 1px solid var(--pp-search-line);
+    color: var(--pp-search-ink);
+  }
+  .pp-search input {
+    @apply h-full min-w-0 flex-1 bg-transparent text-base font-medium outline-none placeholder:opacity-60;
+    color: inherit;
+  }
+  .pp-tab {
+    @apply flex flex-col items-center justify-center gap-1 text-[11px] font-medium text-muted;
+  }
+  .pp-tab[aria-current='page'] {
+    @apply font-bold text-link;
+  }
+
+  /* Category navigation */
+  .pp-nav-item {
+    @apply flex min-h-[40px] w-full items-center gap-2 rounded-xl px-3 text-left text-sm transition-colors hover:bg-base-200;
+  }
+  .pp-nav-sub {
+    @apply flex min-h-[36px] w-full items-center rounded-[10px] px-3 text-left text-sm text-muted transition-colors hover:bg-base-200 hover:text-base-content;
+  }
+  .pp-nav-sub[aria-current='true'] {
+    @apply font-semibold;
+    background: var(--pp-brand-soft);
+    color: var(--pp-link);
+  }
+
+  /* Chips, tags, buttons */
+  .pp-chip {
+    @apply inline-flex h-9 items-center gap-2 rounded-full border bg-base-100 px-3.5 text-[13px] font-semibold transition-colors;
+    border-color: var(--pp-line);
+  }
+  .pp-chip[aria-pressed='true'] {
+    @apply border-base-content bg-base-content text-base-200;
+  }
+  .pp-shop-tag {
+    @apply inline-flex h-5 items-center whitespace-nowrap rounded-full px-2 text-[11px] font-bold leading-none;
+  }
+  .pp-outline-btn {
+    @apply inline-flex h-11 items-center justify-center gap-2 rounded-full border px-5 text-sm font-semibold transition-colors hover:bg-base-100 disabled:pointer-events-none disabled:opacity-40;
+    border-color: var(--pp-line);
+  }
+  .pp-step {
+    @apply mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-base-200 text-xs font-bold;
+  }
+  .pp-input {
+    @apply input input-bordered h-12 w-full rounded-xl bg-base-100;
+    border-color: var(--pp-line);
+  }
+}
+
+/* Angular Material dialogs: our components draw their own surface */
+.pp-dialog .mdc-dialog__surface {
+  background: transparent !important;
+  box-shadow: none !important;
+  border-radius: 24px !important;
+  overflow: visible !important;
+}
+.pp-dialog .mat-mdc-dialog-container {
+  --mdc-dialog-container-color: transparent;
+}
+.cdk-overlay-dark-backdrop {
+  background: rgba(12, 10, 16, 0.6);
+}

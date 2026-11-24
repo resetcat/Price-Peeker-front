@@ -1,97 +1,74 @@
-<!-- Display error alert  -->
-<div *ngIf="showError" role="alert" class="alert alert-error">
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    class="stroke-current shrink-0 h-6 w-6"
-    fill="none"
-    viewBox="0 0 24 24"
-  >
-    <path
-      stroke-linecap="round"
-      stroke-linejoin="round"
-      stroke-width="2"
-      d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
-    />
-  </svg>
-  <span>{{ errorMessage }}</span>
+<div class="pointer-events-none fixed inset-x-0 top-20 z-50 flex justify-center px-4">
+  <div *ngIf="showError" role="alert" class="alert alert-error pointer-events-auto w-auto max-w-md rounded-2xl shadow-lg">
+    <app-icon name="x" class="h-5 w-5"></app-icon>
+    <span>{{ errorMessage }}</span>
+  </div>
+  <div *ngIf="showSuccess" role="alert" class="alert alert-success pointer-events-auto w-auto max-w-md rounded-2xl shadow-lg">
+    <app-icon name="user" class="h-5 w-5"></app-icon>
+    <span>Reģistrācija veiksmīga!</span>
+  </div>
 </div>
 
-<!-- Display success alert  -->
-<div *ngIf="showSuccess" role="alert" class="alert alert-success">
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    class="stroke-current shrink-0 h-6 w-6"
-    fill="none"
-    viewBox="0 0 24 24"
-  >
-    <path
-      stroke-linecap="round"
-      stroke-linejoin="round"
-      stroke-width="2"
-      d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-    />
-  </svg>
-  <span>register successful!</span>
-</div>
-
-<div class="flex items-center justify-center min-h-screen">
-  <div class="p-6 m-4 bg-base-200 shadow-md rounded-lg w-full max-w-sm">
-    <form (ngSubmit)="submit()" #registerForm="ngForm" class="space-y-4">
-      <!-- Username Field -->
-      <div>
-        <label class="label">
-          <span class="label-text">Username</span>
-        </label>
+<div class="flex justify-center px-4 py-12 lg:py-20">
+  <div class="pp-card w-full max-w-sm p-6 md:p-8">
+    <h1 class="font-display text-2xl font-bold">Reģistrēties</h1>
+    <p class="mt-1 text-sm text-muted">Izveido kontu, lai sekotu cenām.</p>
+    <form (ngSubmit)="submit()" #registerForm="ngForm" class="mt-6 flex flex-col gap-4">
+      <div class="flex flex-col gap-1.5">
+        <label for="register-username" class="text-sm font-semibold">Lietotājvārds</label>
         <input
+          id="register-username"
           type="text"
           [(ngModel)]="username"
           name="username"
           #usernameField="ngModel"
-          class="input input-bordered w-full"
-          placeholder="Username"
+          class="pp-input"
+          autocomplete="username"
           required
         />
       </div>
-      <!-- Password Field -->
-      <div>
-        <label class="label">
-          <span class="label-text">Password</span>
-        </label>
+      <div class="flex flex-col gap-1.5">
+        <label for="register-password" class="text-sm font-semibold">Parole</label>
         <input
+          id="register-password"
           type="password"
           [(ngModel)]="password"
           name="password"
           #passwordField="ngModel"
-          class="input input-bordered w-full"
-          placeholder="Password"
+          class="pp-input"
+          autocomplete="new-password"
           required
         />
       </div>
-      <!-- Repeat Password Field -->
-      <div>
-        <label class="label">
-          <span class="label-text">Repeat password</span>
-        </label>
+      <div class="flex flex-col gap-1.5">
+        <label for="register-repeat" class="text-sm font-semibold">Atkārto paroli</label>
         <input
+          id="register-repeat"
           type="password"
           [(ngModel)]="repeatedPassword"
           name="repeatPassword"
           #repeatPasswordField="ngModel"
-          class="input input-bordered w-full"
-          placeholder="repeat password"
+          class="pp-input"
+          autocomplete="new-password"
           required
         />
-      </div>
-      <!-- Submit Button -->
-      <div class="py-5">
-        <button
-          type="submit"
-          class="btn btn-primary w-full"
-          [disabled]="registerForm.invalid || password !== repeatedPassword"
+        <span
+          *ngIf="repeatedPassword && password !== repeatedPassword"
+          class="text-xs text-error"
+          >Paroles nesakrīt.</span
         >
-          Register
-        </button>
       </div>
+      <button
+        type="submit"
+        class="btn btn-accent mt-2 h-12 w-full rounded-full text-[15px] font-bold"
+        [disabled]="registerForm.invalid || password !== repeatedPassword"
+      >
+        Reģistrēties
+      </button>
     </form>
+    <p class="mt-5 text-center text-sm text-muted">
+      Jau ir konts?
+      <a routerLink="/login" class="font-semibold text-link hover:underline">Ienāc</a>
+    </p>
   </div>
 </div>

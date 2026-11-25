@@ -5,8 +5,9 @@ export const content = [
 export const theme = {
   extend: {
     fontFamily: {
-      sans: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
-      display: ['"Space Grotesk"', 'Inter', 'ui-sans-serif', 'sans-serif'],
+      // Self-hosted via @fontsource-variable (see angular.json styles); both cover Latvian and Cyrillic
+      sans: ['"Inter Variable"', 'Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+      display: ['"Manrope Variable"', 'Manrope', '"Inter Variable"', 'ui-sans-serif', 'sans-serif'],
     },
     maxWidth: {
       page: '1376px',

@@ -57,12 +57,33 @@
     background: var(--pp-login-bg);
     color: var(--pp-login-ink);
   }
+  /* Language switcher in the header: a native select styled like the round header buttons */
+  .pp-lang {
+    @apply relative inline-flex h-11 shrink-0 items-center rounded-full;
+    background: var(--pp-hdr-btn);
+  }
+  .pp-lang select {
+    @apply h-full cursor-pointer appearance-none rounded-full bg-transparent pl-9 pr-3 text-sm font-semibold outline-none;
+    color: inherit;
+  }
+  .pp-lang select option {
+    @apply bg-base-100 text-base-content;
+  }
   .pp-seg {
     @apply flex gap-1 rounded-full p-1;
     background: var(--pp-seg-track);
   }
   .pp-seg-btn {
     @apply inline-flex h-10 flex-1 items-center justify-center gap-2 whitespace-nowrap rounded-full px-4 text-sm font-semibold transition-colors lg:flex-none;
+  }
+  /* Three or more store types (e.g. with Aptiekas): tighter buttons, icons hidden on narrow phones */
+  .pp-seg-many .pp-seg-btn {
+    @apply min-w-0 gap-1.5 px-2 text-[13px] lg:px-4 lg:text-sm;
+  }
+  @media (max-width: 399.98px) {
+    .pp-seg-many .pp-seg-btn app-icon {
+      display: none;
+    }
   }
   .pp-seg-btn[aria-pressed='true'] {
     background: var(--pp-seg-on);
@@ -136,7 +157,7 @@
   overflow: visible !important;
 }
 .pp-dialog .mat-mdc-dialog-container {
-  --mdc-dialog-container-color: transparent;
+  --mat-dialog-container-color: transparent;
 }
 .cdk-overlay-dark-backdrop {
   background: rgba(12, 10, 16, 0.6);

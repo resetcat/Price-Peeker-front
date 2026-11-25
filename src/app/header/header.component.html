@@ -3,30 +3,30 @@
   #headerEl
   class="relative z-30 bg-primary text-primary-content shadow-sm lg:sticky lg:top-0"
 >
-  <div
-    class="pp-container flex flex-wrap items-center gap-3 py-3 lg:flex-nowrap lg:gap-5"
-  >
+  <div class="pp-container flex flex-wrap items-center gap-3 py-3 lg:flex-nowrap lg:gap-5">
     <!-- Logo -->
-    <a routerLink="/" class="order-1 shrink-0" aria-label="Price Peeker — sākums">
+    <a routerLink="/" class="order-1 shrink-0" [attr.aria-label]="'app.home' | translate">
       <span class="pp-logo w-32 lg:w-[150px]"></span>
     </a>
 
     <!-- Store type switch: Pārtika / Alkohols (/ Aptiekas) — from shops.config.ts -->
     <div
       class="pp-seg order-4 w-full lg:order-2 lg:w-auto"
+      [class.pp-seg-many]="shopTypes.length > 2"
       role="group"
-      aria-label="Veikalu veids"
+      [attr.aria-label]="'shopType.group' | translate"
     >
-      <button
-        *ngFor="let type of shopTypes"
-        type="button"
-        class="pp-seg-btn"
-        [attr.aria-pressed]="type.id === currentShopType"
-        (click)="selectShopType(type.id)"
-      >
-        <app-icon [name]="type.icon" class="h-[18px] w-[18px]"></app-icon>
-        {{ type.label }}
-      </button>
+      @for (type of shopTypes; track type.id) {
+        <button
+          type="button"
+          class="pp-seg-btn"
+          [attr.aria-pressed]="type.id === currentShopType"
+          (click)="selectShopType(type.id)"
+        >
+          <app-icon [name]="type.icon" class="h-[18px] w-[18px]"></app-icon>
+          {{ type.labelKey | translate }}
+        </button>
+      }
     </div>
 
     <!-- Search -->
@@ -36,7 +36,7 @@
       (ngSubmit)="getProducts(searchInput)"
     >
       <app-icon name="search" class="h-5 w-5 opacity-60"></app-icon>
-      <label for="search" class="sr-only">Meklēt preces</label>
+      <label for="search" class="sr-only">{{ 'search.label' | translate }}</label>
       <input
         #searchInput
         id="search"
@@ -45,46 +45,58 @@
         inputmode="search"
         enterkeyhint="search"
         autocomplete="off"
-        placeholder="meklēt..."
+        [placeholder]="'search.placeholder' | translate"
         [(ngModel)]="searchQuery"
         [disabled]="(loading$ | async) === true"
       />
-      <button
-        *ngIf="searchQuery"
-        type="button"
-        class="pp-icon-btn h-10 w-10 opacity-60 hover:opacity-100"
-        aria-label="Notīrīt meklēšanu"
-        (click)="clearSearch(searchInput)"
-      >
-        <app-icon name="x" class="h-[18px] w-[18px]"></app-icon>
-      </button>
+      @if (searchQuery) {
+        <button
+          type="button"
+          class="pp-icon-btn h-10 w-10 opacity-60 hover:opacity-100"
+          [attr.aria-label]="'search.clear' | translate"
+          (click)="clearSearch(searchInput)"
+        >
+          <app-icon name="x" class="h-[18px] w-[18px]"></app-icon>
+        </button>
+      }
       <button
         type="submit"
         class="btn btn-accent h-10 min-h-0 rounded-full px-4 text-sm font-bold sm:px-5"
-        aria-label="Meklēt"
+        [attr.aria-label]="'search.submit' | translate"
         [disabled]="(loading$ | async) === true"
       >
-        <span *ngIf="(loading$ | async) === true" class="loading loading-spinner loading-xs"></span>
+        @if ((loading$ | async) === true) {
+          <span class="loading loading-spinner loading-xs"></span>
+        }
         <app-icon name="search" [stroke]="2.4" class="h-[18px] w-[18px] sm:hidden"></app-icon>
-        <span class="hidden sm:inline">Meklēt</span>
+        <span class="hidden sm:inline">{{ 'search.submit' | translate }}</span>
       </button>
     </form>
 
     <!-- Actions -->
     <div class="order-2 ml-auto flex items-center gap-2 lg:order-4">
+      <label class="pp-lang">
+        <span class="sr-only">{{ 'app.language' | translate }}</span>
+        <app-icon name="globe" class="pointer-events-none absolute left-3 h-4 w-4"></app-icon>
+        <select [ngModel]="lang.current()" (ngModelChange)="lang.use($event)">
+          @for (language of lang.languages; track language.code) {
+            <option [value]="language.code" [attr.lang]="language.code">{{ language.label }}</option>
+          }
+        </select>
+      </label>
       <button
         type="button"
         class="pp-hdr-btn"
-        [attr.aria-label]="isDarkTheme ? 'Ieslēgt gaišo režīmu' : 'Ieslēgt tumšo režīmu'"
+        [attr.aria-label]="(isDarkTheme ? 'header.themeLight' : 'header.themeDark') | translate"
         (click)="toggleTheme()"
       >
         <app-icon [name]="isDarkTheme ? 'sun' : 'moon'" class="h-5 w-5"></app-icon>
       </button>
-      <ng-container *ngIf="isLoggedIn$ | async; else loggedOut">
+      @if (isLoggedIn$ | async) {
         <button
           type="button"
           class="pp-hdr-btn hidden lg:inline-flex"
-          aria-label="Mani paziņojumi"
+          [attr.aria-label]="'header.notifications' | translate"
           (click)="openNotifications()"
         >
           <app-icon name="bell" class="h-5 w-5"></app-icon>
@@ -92,18 +104,17 @@
         <button
           type="button"
           class="pp-hdr-btn hidden lg:inline-flex"
-          aria-label="Iziet"
+          [attr.aria-label]="'header.logout' | translate"
           (click)="logout()"
         >
           <app-icon name="logout" class="h-5 w-5"></app-icon>
         </button>
-      </ng-container>
-      <ng-template #loggedOut>
-        <a routerLink="/login" class="pp-login hidden lg:inline-flex">
+      } @else {
+        <a routerLink="/login" [queryParams]="loginParams" class="pp-login hidden lg:inline-flex">
           <app-icon name="user" class="h-[18px] w-[18px]"></app-icon>
-          Ienākt
+          {{ 'header.login' | translate }}
         </a>
-      </ng-template>
+      }
     </div>
   </div>
 </header>
@@ -117,13 +128,9 @@
   [attr.aria-hidden]="!showCompactBar"
   [attr.inert]="showCompactBar ? null : ''"
 >
-  <form
-    role="search"
-    class="pp-search mx-3 my-2 h-11"
-    (ngSubmit)="getProducts(compactInput)"
-  >
+  <form role="search" class="pp-search mx-3 my-2 h-11" (ngSubmit)="getProducts(compactInput)">
     <app-icon name="search" class="h-5 w-5 opacity-60"></app-icon>
-    <label for="search-compact" class="sr-only">Meklēt preces</label>
+    <label for="search-compact" class="sr-only">{{ 'search.label' | translate }}</label>
     <input
       #compactInput
       id="search-compact"
@@ -132,23 +139,24 @@
       inputmode="search"
       enterkeyhint="search"
       autocomplete="off"
-      placeholder="meklēt..."
+      [placeholder]="'search.placeholder' | translate"
       [(ngModel)]="searchQuery"
       [disabled]="(loading$ | async) === true"
     />
-    <button
-      *ngIf="searchQuery"
-      type="button"
-      class="pp-icon-btn h-9 w-9 opacity-60"
-      aria-label="Notīrīt meklēšanu"
-      (click)="clearSearch(compactInput)"
-    >
-      <app-icon name="x" class="h-4 w-4"></app-icon>
-    </button>
+    @if (searchQuery) {
+      <button
+        type="button"
+        class="pp-icon-btn h-9 w-9 opacity-60"
+        [attr.aria-label]="'search.clear' | translate"
+        (click)="clearSearch(compactInput)"
+      >
+        <app-icon name="x" class="h-4 w-4"></app-icon>
+      </button>
+    }
     <button
       type="submit"
       class="btn btn-accent h-9 min-h-0 w-9 rounded-full p-0"
-      aria-label="Meklēt"
+      [attr.aria-label]="'search.submit' | translate"
       [disabled]="(loading$ | async) === true"
     >
       <app-icon name="search" [stroke]="2.4" class="h-4 w-4"></app-icon>
@@ -160,7 +168,7 @@
 <nav
   class="fixed inset-x-0 bottom-0 z-30 grid h-[68px] grid-cols-4 border-t border-card-line bg-base-100 transition-transform duration-200 lg:hidden"
   [class.translate-y-full]="hideBottomNav && !drawerOpen"
-  aria-label="Galvenā navigācija"
+  [attr.aria-label]="'nav.main' | translate"
 >
   <button
     type="button"
@@ -169,7 +177,7 @@
     (click)="focusSearch()"
   >
     <app-icon name="search" class="h-[22px] w-[22px]"></app-icon>
-    Meklēt
+    {{ 'nav.search' | translate }}
   </button>
   <button
     type="button"
@@ -178,64 +186,56 @@
     (click)="drawerOpen = true"
   >
     <app-icon name="grid" class="h-[22px] w-[22px]"></app-icon>
-    Kategorijas
+    {{ 'nav.categories' | translate }}
   </button>
-  <ng-container *ngIf="isLoggedIn$ | async; else tabsLoggedOut">
+  @if (isLoggedIn$ | async) {
     <button type="button" class="pp-tab" (click)="openNotifications()">
       <app-icon name="bell" class="h-[22px] w-[22px]"></app-icon>
-      Paziņojumi
+      {{ 'nav.notifications' | translate }}
     </button>
     <button type="button" class="pp-tab" (click)="logout()">
       <app-icon name="logout" class="h-[22px] w-[22px]"></app-icon>
-      Iziet
+      {{ 'nav.logout' | translate }}
     </button>
-  </ng-container>
-  <ng-template #tabsLoggedOut>
-    <a routerLink="/login" class="pp-tab">
+  } @else {
+    <a routerLink="/login" [queryParams]="loginParams" class="pp-tab">
       <app-icon name="bell" class="h-[22px] w-[22px]"></app-icon>
-      Paziņojumi
+      {{ 'nav.notifications' | translate }}
     </a>
     <a
       routerLink="/login"
+      [queryParams]="loginParams"
       class="pp-tab"
       [attr.aria-current]="router.url === '/login' || router.url === '/register' ? 'page' : null"
     >
       <app-icon name="user" class="h-[22px] w-[22px]"></app-icon>
-      Ienākt
+      {{ 'nav.login' | translate }}
     </a>
-  </ng-template>
+  }
 </nav>
 
 <!-- Mobile: category drawer (desktop shows categories in the sidebar) -->
 <div class="drawer lg:hidden">
-  <input
-    id="category-drawer"
-    type="checkbox"
-    class="drawer-toggle"
-    [(ngModel)]="drawerOpen"
-  />
+  <input id="category-drawer" type="checkbox" class="drawer-toggle" [(ngModel)]="drawerOpen" />
   <div class="drawer-content"></div>
   <div class="drawer-side z-40">
     <label
       for="category-drawer"
       class="drawer-overlay"
-      aria-label="Aizvērt kategorijas"
+      [attr.aria-label]="'nav.closeCategories' | translate"
     ></label>
     <div class="flex min-h-full w-80 max-w-[85vw] flex-col gap-4 bg-base-200 p-4">
       <div class="flex items-center justify-between">
-        <h2 class="font-display text-xl font-bold">Kategorijas</h2>
+        <h2 class="font-display text-xl font-bold">{{ 'categories.title' | translate }}</h2>
         <label
           for="category-drawer"
           class="pp-icon-btn cursor-pointer bg-base-100"
-          aria-label="Aizvērt"
+          [attr.aria-label]="'app.close' | translate"
         >
           <app-icon name="x" class="h-[18px] w-[18px]"></app-icon>
         </label>
       </div>
-      <app-category-nav
-        [showTitle]="false"
-        (selected)="onCategorySelected()"
-      ></app-category-nav>
+      <app-category-nav [showTitle]="false" (selected)="onCategorySelected()"></app-category-nav>
     </div>
   </div>
 </div>

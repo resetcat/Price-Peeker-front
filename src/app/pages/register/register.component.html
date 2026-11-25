@@ -1,21 +1,25 @@
 <div class="pointer-events-none fixed inset-x-0 top-20 z-50 flex justify-center px-4">
-  <div *ngIf="showError" role="alert" class="alert alert-error pointer-events-auto w-auto max-w-md rounded-2xl shadow-lg">
-    <app-icon name="x" class="h-5 w-5"></app-icon>
-    <span>{{ errorMessage }}</span>
-  </div>
-  <div *ngIf="showSuccess" role="alert" class="alert alert-success pointer-events-auto w-auto max-w-md rounded-2xl shadow-lg">
-    <app-icon name="user" class="h-5 w-5"></app-icon>
-    <span>Reģistrācija veiksmīga!</span>
-  </div>
+  @if (showError) {
+    <div role="alert" class="alert alert-error pointer-events-auto w-auto max-w-md rounded-2xl shadow-lg">
+      <app-icon name="x" class="h-5 w-5"></app-icon>
+      <span>{{ errorText || (errorKey | translate) }}</span>
+    </div>
+  }
+  @if (showSuccess) {
+    <div role="alert" class="alert alert-success pointer-events-auto w-auto max-w-md rounded-2xl shadow-lg">
+      <app-icon name="user" class="h-5 w-5"></app-icon>
+      <span>{{ 'auth.registerSuccess' | translate }}</span>
+    </div>
+  }
 </div>
 
 <div class="flex justify-center px-4 py-12 lg:py-20">
   <div class="pp-card w-full max-w-sm p-6 md:p-8">
-    <h1 class="font-display text-2xl font-bold">Reģistrēties</h1>
-    <p class="mt-1 text-sm text-muted">Izveido kontu, lai sekotu cenām.</p>
+    <h1 class="font-display text-2xl font-bold">{{ 'auth.registerTitle' | translate }}</h1>
+    <p class="mt-1 text-sm text-muted">{{ 'auth.registerSubtitle' | translate }}</p>
     <form (ngSubmit)="submit()" #registerForm="ngForm" class="mt-6 flex flex-col gap-4">
       <div class="flex flex-col gap-1.5">
-        <label for="register-username" class="text-sm font-semibold">Lietotājvārds</label>
+        <label for="register-username" class="text-sm font-semibold">{{ 'auth.username' | translate }}</label>
         <input
           id="register-username"
           type="text"
@@ -25,10 +29,10 @@
           class="pp-input"
           autocomplete="username"
           required
-        />
+          />
       </div>
       <div class="flex flex-col gap-1.5">
-        <label for="register-password" class="text-sm font-semibold">Parole</label>
+        <label for="register-password" class="text-sm font-semibold">{{ 'auth.password' | translate }}</label>
         <input
           id="register-password"
           type="password"
@@ -38,10 +42,10 @@
           class="pp-input"
           autocomplete="new-password"
           required
-        />
+          />
       </div>
       <div class="flex flex-col gap-1.5">
-        <label for="register-repeat" class="text-sm font-semibold">Atkārto paroli</label>
+        <label for="register-repeat" class="text-sm font-semibold">{{ 'auth.repeatPassword' | translate }}</label>
         <input
           id="register-repeat"
           type="password"
@@ -51,24 +55,25 @@
           class="pp-input"
           autocomplete="new-password"
           required
-        />
-        <span
-          *ngIf="repeatedPassword && password !== repeatedPassword"
-          class="text-xs text-error"
-          >Paroles nesakrīt.</span
-        >
-      </div>
-      <button
-        type="submit"
-        class="btn btn-accent mt-2 h-12 w-full rounded-full text-[15px] font-bold"
-        [disabled]="registerForm.invalid || password !== repeatedPassword"
-      >
-        Reģistrēties
-      </button>
-    </form>
-    <p class="mt-5 text-center text-sm text-muted">
-      Jau ir konts?
-      <a routerLink="/login" class="font-semibold text-link hover:underline">Ienāc</a>
-    </p>
+          />
+        @if (repeatedPassword && password !== repeatedPassword) {
+          <span
+            class="text-xs text-error"
+            >{{ 'auth.passwordsMismatch' | translate }}</span
+            >
+          }
+        </div>
+        <button
+          type="submit"
+          class="btn btn-accent mt-2 h-12 w-full rounded-full text-[15px] font-bold"
+          [disabled]="registerForm.invalid || password !== repeatedPassword"
+          >
+          {{ 'auth.registerButton' | translate }}
+        </button>
+      </form>
+      <p class="mt-5 text-center text-sm text-muted">
+        {{ 'auth.haveAccount' | translate }}
+        <a routerLink="/login" queryParamsHandling="preserve" class="font-semibold text-link hover:underline">{{ 'auth.loginLink' | translate }}</a>
+      </p>
+    </div>
   </div>
-</div>

@@ -4,7 +4,7 @@
   <button
     type="button"
     class="pp-icon-btn absolute right-3 top-3 bg-base-200 hover:bg-base-300"
-    aria-label="Aizvērt"
+    [attr.aria-label]="'app.close' | translate"
     (click)="closeDialog()"
   >
     <app-icon name="x" class="h-[18px] w-[18px]"></app-icon>
@@ -14,49 +14,53 @@
     <span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-brand-soft text-link">
       <app-icon name="send" class="h-5 w-5"></app-icon>
     </span>
-    <h3 class="font-display text-xl font-bold leading-tight">
-      Paziņojumu iestatīšana, izmantojot Telegram
-    </h3>
+    <h3 class="font-display text-xl font-bold leading-tight">{{ 'telegram.title' | translate }}</h3>
   </div>
-  <p class="mt-4 text-sm text-muted">
-    Tikai daži vienkārši soļi, lai sāktu darbu ar mūsu Telegram botu:
-  </p>
+  <p class="mt-4 text-sm text-muted">{{ 'telegram.intro' | translate }}</p>
 
   <ol class="mt-4 flex flex-col gap-3 text-sm leading-6">
     <li class="flex gap-3">
       <span class="pp-step">1</span>
       <span>
-        Pievienojieties mūsu botam tieši, noklikšķinot uz šīs saites:
-        <a class="font-bold text-link underline-offset-2 hover:underline" href="https://t.me/price_peeker_bot" target="_blank" rel="noopener noreferrer">@price_peeker_bot</a>
-        un sekojot instrukcijām
+        {{ 'telegram.step1' | translate }}
+        <a
+          class="font-bold text-link underline-offset-2 hover:underline"
+          href="https://t.me/price_peeker_bot"
+          target="_blank"
+          rel="noopener noreferrer"
+          >&#64;price_peeker_bot</a
+        >
+        {{ 'telegram.step1End' | translate }}
       </span>
     </li>
     <li class="flex gap-3">
       <span class="pp-step">2</span>
-      <span>
-        Vai arī meklējiet mūsu botu Telegram, izmantojot šo lietotājvārdu:
-        <strong>@price_peeker_bot</strong>, un sāciet sarunu, nospiežot pogu 'Start'.
-      </span>
+      <!-- step2End starts with a comma, so it follows the bot name without a space -->
+      <span
+        >{{ 'telegram.step2' | translate }} <strong>&#64;price_peeker_bot</strong
+        >{{ 'telegram.step2End' | translate }}</span
+      >
     </li>
     <li class="flex gap-3">
       <span class="pp-step">3</span>
       <span>
-        Saistiet savu PricePeeker kontu, nosūtot šādu ziņu:
-        <code class="rounded-md bg-base-200 px-1.5 py-0.5 text-[13px]">/register jūsu_lietotājvārds</code>
-        (aizstājiet <em>"jūsu_lietotājvārds"</em> ar jūsu faktisko lietotājvārdu).
+        {{ 'telegram.step3' | translate }}
+        <code class="rounded-md bg-base-200 px-1.5 py-0.5 text-[13px]">{{
+          'telegram.step3Command' | translate
+        }}</code>
+        {{ 'telegram.step3End' | translate }}
       </span>
     </li>
     <li class="flex gap-3">
       <span class="pp-step">4</span>
-      <span>
-        Ja viss izdarīts pareizi, bots atbildēs ar "User added successfully", un tagad jūs
-        saņemsiet paziņojumus par izvēlētajām cenu izmaiņām.
-      </span>
+      <span>{{ 'telegram.step4' | translate }}</span>
     </li>
   </ol>
 
   <div class="mt-6 flex flex-wrap justify-end gap-2">
-    <button type="button" class="pp-outline-btn" (click)="closeDialog()">Aizvērt</button>
+    <button type="button" class="pp-outline-btn" (click)="closeDialog()">
+      {{ 'telegram.close' | translate }}
+    </button>
     <a
       class="btn btn-accent h-11 min-h-0 rounded-full px-5 font-bold"
       href="https://t.me/price_peeker_bot"
@@ -64,7 +68,7 @@
       rel="noopener noreferrer"
     >
       <app-icon name="send" class="h-4 w-4"></app-icon>
-      Atvērt Telegram
+      {{ 'telegram.open' | translate }}
     </a>
   </div>
 </div>

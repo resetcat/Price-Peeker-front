@@ -1,21 +1,25 @@
 <div class="pointer-events-none fixed inset-x-0 top-20 z-50 flex justify-center px-4">
-  <div *ngIf="showError" role="alert" class="alert alert-error pointer-events-auto w-auto max-w-md rounded-2xl shadow-lg">
-    <app-icon name="x" class="h-5 w-5"></app-icon>
-    <span>{{ errorMessage }}</span>
-  </div>
-  <div *ngIf="showSuccess" role="alert" class="alert alert-success pointer-events-auto w-auto max-w-md rounded-2xl shadow-lg">
-    <app-icon name="user" class="h-5 w-5"></app-icon>
-    <span>Veiksmīgi pieslēdzies!</span>
-  </div>
+  @if (showError) {
+    <div role="alert" class="alert alert-error pointer-events-auto w-auto max-w-md rounded-2xl shadow-lg">
+      <app-icon name="x" class="h-5 w-5"></app-icon>
+      <span>{{ 'auth.loginError' | translate }}</span>
+    </div>
+  }
+  @if (showSuccess) {
+    <div role="alert" class="alert alert-success pointer-events-auto w-auto max-w-md rounded-2xl shadow-lg">
+      <app-icon name="user" class="h-5 w-5"></app-icon>
+      <span>{{ 'auth.loginSuccess' | translate }}</span>
+    </div>
+  }
 </div>
 
 <div class="flex justify-center px-4 py-12 lg:py-20">
   <div class="pp-card w-full max-w-sm p-6 md:p-8">
-    <h1 class="font-display text-2xl font-bold">Ienākt</h1>
-    <p class="mt-1 text-sm text-muted">Lai sekotu cenām un saņemtu paziņojumus.</p>
+    <h1 class="font-display text-2xl font-bold">{{ 'auth.loginTitle' | translate }}</h1>
+    <p class="mt-1 text-sm text-muted">{{ 'auth.loginSubtitle' | translate }}</p>
     <form (ngSubmit)="login()" class="mt-6 flex flex-col gap-4">
       <div class="flex flex-col gap-1.5">
-        <label for="login-username" class="text-sm font-semibold">Lietotājvārds</label>
+        <label for="login-username" class="text-sm font-semibold">{{ 'auth.username' | translate }}</label>
         <input
           id="login-username"
           type="text"
@@ -24,10 +28,10 @@
           class="pp-input"
           autocomplete="username"
           required
-        />
+          />
       </div>
       <div class="flex flex-col gap-1.5">
-        <label for="login-password" class="text-sm font-semibold">Parole</label>
+        <label for="login-password" class="text-sm font-semibold">{{ 'auth.password' | translate }}</label>
         <input
           id="login-password"
           type="password"
@@ -36,15 +40,15 @@
           class="pp-input"
           autocomplete="current-password"
           required
-        />
+          />
       </div>
       <button type="submit" class="btn btn-accent mt-2 h-12 w-full rounded-full text-[15px] font-bold">
-        Ienākt
+        {{ 'auth.loginButton' | translate }}
       </button>
     </form>
     <p class="mt-5 text-center text-sm text-muted">
-      Nav konta?
-      <a routerLink="/register" class="font-semibold text-link hover:underline">Reģistrējies</a>
+      {{ 'auth.noAccount' | translate }}
+      <a routerLink="/register" queryParamsHandling="preserve" class="font-semibold text-link hover:underline">{{ 'auth.registerLink' | translate }}</a>
     </p>
   </div>
 </div>

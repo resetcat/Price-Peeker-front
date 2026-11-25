@@ -6,8 +6,10 @@ import {
   OnDestroy,
   OnInit,
   ViewChild,
+  ChangeDetectionStrategy
 } from '@angular/core';
-import { Router } from '@angular/router';
+import { NavigationEnd, Params, Router } from '@angular/router';
+import { Subscription, filter, map, startWith } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
 import { ProductsService } from '../services/products.service';
 import { AuthService } from '../services/auth.service';
@@ -17,6 +19,13 @@ import {
   ShopTypeId,
   getShopIds,
 } from '../config/shops.config';
+import {
+  PARAM,
+  parseShopType,
+  returnUrlParams,
+  searchParams,
+} from '../config/search-params';
+import { LanguageService } from '../i18n/language.service';
 import { NotificationModalComponent } from '../pages/modals/notification-modal/notification-modal.component';
 
 const LIGHT_THEME = 'peeker-light';
@@ -32,9 +41,11 @@ const LEGACY_THEMES: Record<string, string> = {
 };
 
 @Component({
-  selector: 'app-header',
-  templateUrl: './header.component.html',
-  styleUrls: ['./header.component.css'],
+    selector: 'app-header',
+    templateUrl: './header.component.html',
+    styleUrls: ['./header.component.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class HeaderComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('headerEl') headerEl?: ElementRef<HTMLElement>;
@@ -59,17 +70,42 @@ export class HeaderComponent implements OnInit, AfterViewInit, OnDestroy {
   readonly shopTypes: ShopType[] = SHOP_TYPES;
   currentShopType: ShopTypeId = SHOP_TYPES[0].id;
   selectedShops: number[] = getShopIds(this.currentShopType);
+  /** The search currently in the URL, if any. */
+  private activeQuery: string | null = null;
+  private subscriptions = new Subscription();
 
   constructor(
     private productService: ProductsService,
     private authService: AuthService,
     private dialog: MatDialog,
     public router: Router,
-    private zone: NgZone
+    private zone: NgZone,
+    public lang: LanguageService
   ) {}
 
   ngOnInit(): void {
     this.initializeTheme();
+
+    // Keep the search box and store switch in step with the URL
+    // (direct links, refresh, back/forward).
+    this.subscriptions.add(
+      this.router.events
+        .pipe(
+          filter((event) => event instanceof NavigationEnd),
+          startWith(null),
+          map(() => this.router.parseUrl(this.router.url).queryParamMap)
+        )
+        .subscribe((params) => {
+          const query = params.get(PARAM.query);
+          this.activeQuery = query?.trim() || null;
+          if (query !== null) {
+            this.searchQuery = query;
+            this.applyShopType(parseShopType(params.get(PARAM.type)));
+          } else if (!params.has(PARAM.category)) {
+            this.searchQuery = '';
+          }
+        })
+    );
   }
 
   ngAfterViewInit(): void {
@@ -85,11 +121,22 @@ export class HeaderComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.removeScrollListener?.();
+    this.subscriptions.unsubscribe();
+  }
+
+  /** Links to /login carry the current page, so login brings you back. */
+  get loginParams(): Params | null {
+    return returnUrlParams(this.router.url);
   }
 
   selectShopType(type: ShopTypeId) {
-    this.currentShopType = type;
-    this.selectedShops = getShopIds(type);
+    this.applyShopType(type);
+    // Results are showing: run the same search in the newly picked store type.
+    if (this.activeQuery) {
+      this.router.navigate(['/'], {
+        queryParams: searchParams(this.activeQuery, type),
+      });
+    }
   }
 
   getProducts(input?: HTMLInputElement) {
@@ -98,11 +145,18 @@ export class HeaderComponent implements OnInit, AfterViewInit, OnDestroy {
       (input ?? this.searchInput?.nativeElement)?.focus();
       return;
     }
-    this.productService.getProducts(query, this.selectedShops);
+    const target = this.router.createUrlTree(['/'], {
+      queryParams: searchParams(query, this.currentShopType),
+    });
+    if (this.router.serializeUrl(target) === this.router.url) {
+      // Same search again: the URL doesn't change, so refresh directly.
+      this.productService.getProducts(query, this.selectedShops);
+    } else {
+      this.router.navigateByUrl(target);
+    }
     this.drawerOpen = false;
     input?.blur();
     this.searchInput?.nativeElement.blur();
-    this.goHome();
     this.revealResults();
   }
 
@@ -123,7 +177,6 @@ export class HeaderComponent implements OnInit, AfterViewInit, OnDestroy {
 
   onCategorySelected() {
     this.drawerOpen = false;
-    this.goHome();
     this.revealResults();
   }
 
@@ -210,9 +263,8 @@ export class HeaderComponent implements OnInit, AfterViewInit, OnDestroy {
     return this.compactBar?.nativeElement.offsetHeight ?? 60;
   }
 
-  private goHome() {
-    if (this.router.url !== '/') {
-      this.router.navigate(['/']);
-    }
+  private applyShopType(type: ShopTypeId) {
+    this.currentShopType = type;
+    this.selectedShops = getShopIds(type);
   }
 }

@@ -1,10 +1,12 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import {
   MAT_DIALOG_DATA,
   MatDialog,
   MatDialogRef,
 } from '@angular/material/dialog';
+import { Params, Router } from '@angular/router';
 import { take } from 'rxjs';
+import { returnUrlParams } from 'src/app/config/search-params';
 import { ShopInfo, getShop } from 'src/app/config/shops.config';
 import { NotificationDTO } from 'src/app/models/notification.dto';
 import { NutritionDto } from 'src/app/models/nutrition.dto';
@@ -12,6 +14,8 @@ import { ProductDto } from 'src/app/models/products.dto';
 import { AuthService } from 'src/app/services/auth.service';
 import { NotificationService } from 'src/app/services/notification.service';
 import { ProductsService } from 'src/app/services/products.service';
+import { LanguageService } from 'src/app/i18n/language.service';
+import { nutrientKey } from 'src/app/i18n/nutrients';
 import { TelegramInsctructionComponent } from '../telegram-insctruction/telegram-insctruction.component';
 
 /**
@@ -20,13 +24,17 @@ import { TelegramInsctructionComponent } from '../telegram-insctruction/telegram
  * to show only the alerts.
  */
 @Component({
-  selector: 'app-notification-modal',
-  templateUrl: './notification-modal.component.html',
-  styleUrls: ['./notification-modal.component.css'],
+    selector: 'app-notification-modal',
+    templateUrl: './notification-modal.component.html',
+    styleUrls: ['./notification-modal.component.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class NotificationModalComponent implements OnInit {
   notifications: NotificationDTO[] = [];
-  errorMessage: string = '';
+  /** Translation key (and its parameters) of the error shown above the alerts. */
+  errorKey: string | null = null;
+  errorParams: Record<string, unknown> = {};
   isLoggedIn: boolean = false;
   hasNutritionInfo: boolean = false;
   nutrition: NutritionDto | null = null;
@@ -42,8 +50,15 @@ export class NotificationModalComponent implements OnInit {
     private notificationService: NotificationService,
     private productsService: ProductsService,
     private authService: AuthService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private router: Router,
+    public lang: LanguageService
   ) {}
+
+  /** Log in, then come back to the results this dialog was opened from. */
+  get loginParams(): Params | null {
+    return returnUrlParams(this.router.url);
+  }
 
   ngOnInit(): void {
     this.authService.isLoggedIn$.pipe(take(1)).subscribe((loggedIn) => {
@@ -69,8 +84,17 @@ export class NotificationModalComponent implements OnInit {
     );
   }
 
-  get loyaltyCardLabel(): string {
-    return this.shop?.loyaltyCard ?? 'klienta karti';
+  /** The shop's loyalty card, e.g. "R"; null when the shop has no named card. */
+  get loyaltyCard(): string | null {
+    return this.shop?.loyaltyCard ?? null;
+  }
+
+  /**
+   * Nutrition rows come from the shops in Latvian. In other languages, known
+   * rows get our translation key; unknown ones are shown as the shop wrote them.
+   */
+  nutrientLabelKey(name: string): string | null {
+    return this.lang.current() === 'lv' ? null : nutrientKey(name);
   }
 
   onNoClick(): void {
@@ -89,7 +113,7 @@ export class NotificationModalComponent implements OnInit {
       error: (err) => {
         console.error(err);
         if (err.status === 401) {
-          this.errorMessage = 'Ienāc, lai redzētu savus paziņojumus.';
+          this.errorKey = 'alerts.loginRequired';
         }
       },
     });
@@ -115,7 +139,8 @@ export class NotificationModalComponent implements OnInit {
 
   addNotification(product: ProductDto) {
     if (this.notifications.length >= this.maxNotifications) {
-      this.errorMessage = `Var izsekot ne vairāk kā ${this.maxNotifications} preces. Izdzēs kādu paziņojumu, lai pievienotu jaunu.`;
+      this.errorKey = 'alerts.limit';
+      this.errorParams = { max: this.maxNotifications };
       return;
     }
     this.adding = true;
@@ -126,7 +151,7 @@ export class NotificationModalComponent implements OnInit {
       },
       error: (err) => {
         console.error(err);
-        this.errorMessage = 'Neizdevās pievienot paziņojumu.';
+        this.errorKey = 'alerts.addError';
         this.adding = false;
       },
     });

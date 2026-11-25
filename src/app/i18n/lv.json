@@ -1,0 +1,165 @@
+{
+  "app": {
+    "home": "Price Peeker — sākums",
+    "language": "Valoda",
+    "close": "Aizvērt",
+    "loading": "Ielādē"
+  },
+  "shopType": {
+    "group": "Veikalu veids",
+    "grocery": "Pārtika",
+    "spirit": "Alkohols",
+    "pharmacy": "Aptiekas"
+  },
+  "search": {
+    "label": "Meklēt preces",
+    "placeholder": "meklēt...",
+    "clear": "Notīrīt meklēšanu",
+    "submit": "Meklēt",
+    "languageHint": ""
+  },
+  "header": {
+    "themeLight": "Ieslēgt gaišo režīmu",
+    "themeDark": "Ieslēgt tumšo režīmu",
+    "notifications": "Mani paziņojumi",
+    "logout": "Iziet",
+    "login": "Ienākt"
+  },
+  "nav": {
+    "main": "Galvenā navigācija",
+    "search": "Meklēt",
+    "categories": "Kategorijas",
+    "notifications": "Paziņojumi",
+    "logout": "Iziet",
+    "login": "Ienākt",
+    "closeCategories": "Aizvērt kategorijas"
+  },
+  "categories": {
+    "title": "Kategorijas",
+    "loadError": "Neizdevās ielādēt kategorijas."
+  },
+  "promo": {
+    "title": "Cenu paziņojumi Telegram",
+    "text": "Saņem ziņu, tiklīdz izsekotās preces cena nokrītas.",
+    "cta": "Kā pieslēgt"
+  },
+  "results": {
+    "searchTitle": "Rezultāti: „{{query}}”",
+    "categoryPlaceholder": "Kategorija",
+    "sort": "Kārtot",
+    "filters": "Filtri",
+    "allShops": "Visi veikali",
+    "dealsOnly": "Tikai akcijas",
+    "noMatch": "Ar šiem filtriem nekas neatbilst",
+    "clearFilters": "Notīrīt filtrus",
+    "notFound": "Nekas nav atrasts :(",
+    "notFoundHint": "Pamēģini citu vārdu vai pārslēdz veikalu veidu.",
+    "error": "Neizdevās ielādēt rezultātus",
+    "emptyTitle": "Ko meklēsim šodien?",
+    "emptyText": "Ieraksti preces nosaukumu meklēšanas laukā vai izvēlies kategoriju — salīdzināsim cenas dažādos veikalos.",
+    "pages": "Lapas",
+    "prev": "Iepriekšējā",
+    "next": "Nākamā",
+    "items": {
+      "zero": "{{count}} preces",
+      "one": "{{count}} prece",
+      "other": "{{count}} preces"
+    },
+    "shops": {
+      "zero": "no {{count}} veikaliem",
+      "one": "no {{count}} veikala",
+      "other": "no {{count}} veikaliem"
+    }
+  },
+  "sort": {
+    "default": "pēc noklusējuma",
+    "priceAsc": "zemākā cena vispirms",
+    "priceDesc": "augstākā cena vispirms",
+    "discount": "ar akcijām vispirms",
+    "pricePerUnitAsc": "zemākā cena par kg/gb",
+    "pricePerUnitDesc": "augstākā cena par kg/gb"
+  },
+  "product": {
+    "details": "{{name}} — sīkāk",
+    "follow": "Sekot cenai",
+    "following": "Tu seko šīs preces cenai",
+    "loginToFollow": "Ienāc, lai sekotu cenai",
+    "unavailable": "Prece nav pieejama",
+    "cardOnly": "Tikai ar {{card}}-karti",
+    "cardOnlyGeneric": "Tikai ar klienta karti"
+  },
+  "nutrition": {
+    "title": "Uzturvērtība",
+    "per": "uz {{amount}}",
+    "loadError": "Neizdevās ielādēt uzturvērtību.",
+    "none": "Uzturvērtība nav pieejama.",
+    "energy": "Enerģētiskā vērtība",
+    "fat": "Tauki",
+    "saturates": "t. sk. piesātinātās taukskābes",
+    "carbs": "Ogļhidrāti",
+    "sugars": "t. sk. cukuri",
+    "fibre": "Šķiedrvielas",
+    "protein": "Olbaltumvielas",
+    "salt": "Sāls"
+  },
+  "alerts": {
+    "title": "Mani paziņojumi",
+    "empty": "Vēl nav neviena paziņojuma. Atver preci un spied „Sekot cenai”.",
+    "dropped": "Cena kritās",
+    "waiting": "Gaida",
+    "delete": "Dzēst paziņojumu",
+    "telegramHint": "Paziņojumi pienāk Telegram botā",
+    "howTo": "Kā pieslēgt →",
+    "guestTitle": "Cenu paziņojumi",
+    "guestText": "Ienāc, lai sekotu preču cenām un saņemtu ziņu Telegram, kad cena nokrītas.",
+    "login": "Ienākt",
+    "limit": "Var izsekot ne vairāk kā {{max}} preces. Izdzēs kādu paziņojumu, lai pievienotu jaunu.",
+    "addError": "Neizdevās pievienot paziņojumu.",
+    "loginRequired": "Ienāc, lai redzētu savus paziņojumus."
+  },
+  "telegram": {
+    "title": "Paziņojumu iestatīšana, izmantojot Telegram",
+    "intro": "Tikai daži vienkārši soļi, lai sāktu darbu ar mūsu Telegram botu:",
+    "step1": "Pievienojieties mūsu botam tieši, noklikšķinot uz šīs saites:",
+    "step1End": "un sekojot instrukcijām.",
+    "step2": "Vai arī meklējiet mūsu botu Telegram, izmantojot šo lietotājvārdu:",
+    "step2End": ", un sāciet sarunu, nospiežot pogu „Start”.",
+    "step3": "Saistiet savu Price Peeker kontu, nosūtot šādu ziņu:",
+    "step3Command": "/register jūsu_lietotājvārds",
+    "step3End": "(aizstājiet „jūsu_lietotājvārds” ar savu lietotājvārdu).",
+    "step4": "Ja viss izdarīts pareizi, bots atbildēs ar „User added successfully”, un turpmāk jūs saņemsiet paziņojumus par izvēlēto preču cenu izmaiņām.",
+    "close": "Aizvērt",
+    "open": "Atvērt Telegram"
+  },
+  "footer": {
+    "tagline": "Salīdzini cenas Latvijas veikalos un ietaupi.",
+    "account": "Konts",
+    "login": "Ienākt",
+    "register": "Reģistrēties",
+    "explore": "Izpēti",
+    "telegram": "Telegram instrukcija",
+    "notifications": "Paziņojumi",
+    "contacts": "Kontakti",
+    "email": "E-pasts"
+  },
+  "auth": {
+    "loginTitle": "Ienākt",
+    "loginSubtitle": "Lai sekotu cenām un saņemtu paziņojumus.",
+    "username": "Lietotājvārds",
+    "password": "Parole",
+    "repeatPassword": "Atkārto paroli",
+    "loginButton": "Ienākt",
+    "noAccount": "Nav konta?",
+    "registerLink": "Reģistrējies",
+    "loginSuccess": "Veiksmīgi pieslēdzies!",
+    "loginError": "Neizdevās ienākt. Pārbaudi lietotājvārdu un paroli.",
+    "registerTitle": "Reģistrēties",
+    "registerSubtitle": "Izveido kontu, lai sekotu cenām.",
+    "registerButton": "Reģistrēties",
+    "passwordsMismatch": "Paroles nesakrīt.",
+    "registerSuccess": "Reģistrācija veiksmīga!",
+    "registerError": "Reģistrācija neizdevās.",
+    "haveAccount": "Jau ir konts?",
+    "loginLink": "Ienāc"
+  }
+}

@@ -1,5 +1,8 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ChangeDetectionStrategy } from '@angular/core';
+import { Router } from '@angular/router';
 import { first } from 'rxjs';
+import { categoryParams } from '../config/search-params';
+import { LanguageService } from '../i18n/language.service';
 import { CategoryDTO, ParentCategoryDTO } from '../models/category.dto';
 import { CategoryService } from '../services/category.service';
 import { ProductsService } from '../services/products.service';
@@ -9,8 +12,10 @@ const PINNED_CATEGORIES = [SALE_CATEGORY, 'Alkohols'];
 
 /** Category list used in the desktop sidebar and the mobile drawer. */
 @Component({
-  selector: 'app-category-nav',
-  templateUrl: './category-nav.component.html',
+    selector: 'app-category-nav',
+    templateUrl: './category-nav.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class CategoryNavComponent implements OnInit {
   @Input() showTitle = true;
@@ -24,7 +29,9 @@ export class CategoryNavComponent implements OnInit {
 
   constructor(
     private categoryService: CategoryService,
-    private productService: ProductsService
+    private productService: ProductsService,
+    private router: Router,
+    public lang: LanguageService
   ) {}
 
   ngOnInit(): void {
@@ -65,7 +72,8 @@ export class CategoryNavComponent implements OnInit {
   }
 
   select(category: CategoryDTO) {
-    this.productService.getCategory(category.id, 1, category.name);
+    // The results page loads it from the URL (/?category=12).
+    this.router.navigate(['/'], { queryParams: categoryParams(category.id) });
     this.selected.emit(category.id);
   }
 

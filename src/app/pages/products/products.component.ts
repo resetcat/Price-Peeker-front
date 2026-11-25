@@ -1,11 +1,20 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { Subscription, distinctUntilChanged } from 'rxjs';
+import { ActivatedRoute, ParamMap, Params, Router } from '@angular/router';
+import { Subscription, first } from 'rxjs';
 import { ProductDto } from 'src/app/models/products.dto';
 import { SearchState } from 'src/app/models/search.dto';
 import { AuthService } from 'src/app/services/auth.service';
 import { ProductsService } from 'src/app/services/products.service';
-import { ShopInfo, getShop } from 'src/app/config/shops.config';
+import { CategoryService } from 'src/app/services/category.service';
+import { ShopInfo, getShop, getShopIds } from 'src/app/config/shops.config';
+import {
+  PARAM,
+  categoryParams,
+  parseShopType,
+} from 'src/app/config/search-params';
+import { TranslateService } from '@ngx-translate/core';
+import { LanguageService } from 'src/app/i18n/language.service';
 import { NotificationModalComponent } from '../modals/notification-modal/notification-modal.component';
 import { TelegramInsctructionComponent } from '../modals/telegram-insctruction/telegram-insctruction.component';
 
@@ -18,9 +27,11 @@ type SortOption =
   | 'pricePerUnitDesc';
 
 @Component({
-  selector: 'app-products',
-  templateUrl: './products.component.html',
-  styleUrls: ['./products.component.css'],
+    selector: 'app-products',
+    templateUrl: './products.component.html',
+    styleUrls: ['./products.component.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class ProductsComponent implements OnInit, OnDestroy {
   /** Results in the order the API returned them. */
@@ -30,18 +41,20 @@ export class ProductsComponent implements OnInit, OnDestroy {
 
   searchState: SearchState = SearchState.Initial;
   searchStates = SearchState;
-  errorMessage: string | null = null;
+  /** Set when the last request failed. */
+  loadFailed = false;
   categoryPage: number = 1;
   isLoggedIn: boolean = false;
 
   sortValue: SortOption = 'default';
-  readonly sortOptions: { value: SortOption; label: string }[] = [
-    { value: 'default', label: 'pēc noklusējuma' },
-    { value: 'priceAsc', label: 'zemākā cena vispirms' },
-    { value: 'priceDesc', label: 'augstākā cena vispirms' },
-    { value: 'discount', label: 'ar akcijām vispirms' },
-    { value: 'pricePerUnitAsc', label: 'zemākā cena par kg/gb' },
-    { value: 'pricePerUnitDesc', label: 'augstākā cena par kg/gb' },
+  /** Labels are translation keys: sort.<value>. */
+  readonly sortOptions: { value: SortOption; labelKey: string }[] = [
+    { value: 'default', labelKey: 'sort.default' },
+    { value: 'priceAsc', labelKey: 'sort.priceAsc' },
+    { value: 'priceDesc', labelKey: 'sort.priceDesc' },
+    { value: 'discount', labelKey: 'sort.discount' },
+    { value: 'pricePerUnitAsc', labelKey: 'sort.pricePerUnitAsc' },
+    { value: 'pricePerUnitDesc', labelKey: 'sort.pricePerUnitDesc' },
   ];
   shopFilter: number | null = null;
   discountOnly = false;
@@ -59,6 +72,11 @@ export class ProductsComponent implements OnInit, OnDestroy {
   constructor(
     private productService: ProductsService,
     private authService: AuthService,
+    private categoryService: CategoryService,
+    private route: ActivatedRoute,
+    private router: Router,
+    private translate: TranslateService,
+    public lang: LanguageService,
     public dialog: MatDialog
   ) {}
 
@@ -66,9 +84,6 @@ export class ProductsComponent implements OnInit, OnDestroy {
     this.subscriptions.add(
       this.productService.products$.subscribe((data) => {
         this.defaultProducts = data;
-        this.sortValue = 'default';
-        this.shopFilter = null;
-        this.discountOnly = false;
         this.shopsInResults = Array.from(new Set(data.map((p) => p.id))).map(getShop);
         this.hasDiscounts = data.some((p) => !!p.discountedPrice);
         this.applyView();
@@ -83,16 +98,16 @@ export class ProductsComponent implements OnInit, OnDestroy {
 
     this.subscriptions.add(
       this.productService.error$.subscribe((error) => {
-        this.errorMessage = error ? error.statusText || 'An error occurred' : null;
+        this.loadFailed = !!error;
       })
     );
 
+    // The URL decides what is shown: search, category page and filters.
     this.subscriptions.add(
-      this.productService.categoryId
-        .pipe(distinctUntilChanged())
-        .subscribe(() => {
-          this.categoryPage = 1;
-        })
+      this.route.queryParamMap.subscribe((params) => {
+        this.loadResults(params);
+        this.applyFilterParams(params);
+      })
     );
 
     this.authService.validateToken();
@@ -116,52 +131,138 @@ export class ProductsComponent implements OnInit, OnDestroy {
   }
 
   nextPage() {
-    const categoryId = this.productService.categoryId.getValue();
-    this.categoryPage++;
-    this.productService.getCategory(categoryId, this.categoryPage);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    this.goToPage(this.categoryPage + 1);
   }
 
   previousePage() {
     if (this.categoryPage > 1) {
-      const categoryId = this.productService.categoryId.getValue();
-
-      this.categoryPage--;
-      this.productService.getCategory(categoryId, this.categoryPage);
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      this.goToPage(this.categoryPage - 1);
     }
   }
 
+  setSort(value: SortOption) {
+    this.updateParams({ [PARAM.sort]: value === 'default' ? null : value });
+  }
+
   setShopFilter(shopId: number | null) {
-    this.shopFilter = shopId;
-    this.applyView();
+    this.updateParams({ [PARAM.shop]: shopId });
   }
 
   clearFilters() {
-    this.shopFilter = null;
-    this.discountOnly = false;
-    this.applyView();
+    this.updateParams({ [PARAM.shop]: null, [PARAM.deals]: null });
   }
 
   toggleDiscountOnly() {
-    this.discountOnly = !this.discountOnly;
-    this.applyView();
+    this.updateParams({ [PARAM.deals]: this.discountOnly ? null : 1 });
   }
 
-  /** "8 preces no 2 veikaliem" */
+  /** "8 preces no 2 veikaliem" / "8 items from 2 shops" / "8 товаров в 2 магазинах" */
   get resultSummary(): string {
     const count = this.products.length;
     const shops = new Set(this.products.map((p) => p.id)).size;
-    const items = `${count} ${this.isSingular(count) ? 'prece' : 'preces'}`;
-    return `${items} no ${shops} ${this.isSingular(shops) ? 'veikala' : 'veikaliem'}`;
+    return `${this.lang.plural('results.items', count)} ${this.lang.plural('results.shops', shops)}`;
   }
 
-  loyaltyCardLabel(product: ProductDto): string {
-    return getShop(product.id).loyaltyCard ?? 'klienta karti';
+  /** The shop's loyalty card, e.g. "R" for "Tikai ar R-karti"; null when the shop has no named card. */
+  loyaltyCard(product: ProductDto): string | null {
+    return getShop(product.id).loyaltyCard ?? null;
   }
 
   hideBrokenImage(event: Event) {
     (event.target as HTMLImageElement).style.visibility = 'hidden';
+  }
+
+  /** Loads what the URL asks for, unless those results are already loaded. */
+  private loadResults(params: ParamMap) {
+    const query = params.get(PARAM.query)?.trim();
+    const categoryId = Number(params.get(PARAM.category));
+    const page = Math.max(1, Math.floor(Number(params.get(PARAM.page))) || 1);
+
+    if (query) {
+      const type = parseShopType(params.get(PARAM.type));
+      this.loadOnce(`search:${type}:${query}`, () =>
+        this.productService.getProducts(query, getShopIds(type))
+      );
+    } else if (Number.isInteger(categoryId) && categoryId > 0) {
+      this.categoryPage = page;
+      this.loadOnce(`category:${categoryId}:${page}`, () => {
+        const sameCategory = this.productService.categoryId.value === categoryId;
+        // Keep the title while paging; a new category shows a placeholder
+        // until its name is looked up.
+        this.productService.getCategory(
+          categoryId,
+          page,
+          sameCategory ? undefined : this.translate.instant('results.categoryPlaceholder')
+        );
+        if (!sameCategory) {
+          this.showCategoryName(categoryId);
+        }
+      });
+    } else {
+      this.loadOnce('home', () => this.productService.clear());
+    }
+  }
+
+  private loadOnce(key: string, load: () => void) {
+    if (this.productService.currentKey === key) {
+      return;
+    }
+    this.productService.currentKey = key;
+    load();
+  }
+
+  private showCategoryName(id: number) {
+    this.categoryService
+      .getAllCategories()
+      .pipe(first())
+      .subscribe({
+        next: (categories) => {
+          const name = categories
+            .flatMap((parent) => [parent, ...(parent.categories ?? [])])
+            .find((category) => category.id === id)?.name;
+          const stillShowing =
+            this.productService.currentKey?.startsWith(`category:${id}:`) ?? false;
+          if (name && stillShowing) {
+            this.productService.resultContext.next({ kind: 'category', label: name });
+          }
+        },
+        error: () => {
+          // Keep the placeholder title.
+        },
+      });
+  }
+
+  private applyFilterParams(params: ParamMap) {
+    const sort = params.get(PARAM.sort);
+    this.sortValue = this.sortOptions.some((option) => option.value === sort)
+      ? (sort as SortOption)
+      : 'default';
+    const shop = Number(params.get(PARAM.shop));
+    this.shopFilter = params.has(PARAM.shop) && Number.isInteger(shop) ? shop : null;
+    this.discountOnly = params.get(PARAM.deals) === '1';
+    this.applyView();
+  }
+
+  /** Filter changes replace the current history entry instead of adding one. */
+  private updateParams(changes: Params) {
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: changes,
+      queryParamsHandling: 'merge',
+      replaceUrl: true,
+    });
+  }
+
+  private goToPage(page: number) {
+    const categoryId = Number(this.route.snapshot.queryParamMap.get(PARAM.category));
+    if (!categoryId) {
+      return;
+    }
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: categoryParams(categoryId, page),
+    });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   applyView(): void {
@@ -201,10 +302,6 @@ export class ProductsComponent implements OnInit, OnDestroy {
     // Shops send prices as numbers or strings like "1.49€".
     const amount = parseFloat(String(price).replace(',', '.').replace(/[^\d.-]/g, ''));
     return Number.isFinite(amount) ? amount : Number.MAX_VALUE;
-  }
-
-  private isSingular(n: number): boolean {
-    return n % 10 === 1 && n % 100 !== 11;
   }
 
   sortBy(list: any[], key: string, isAsc: boolean): any[] {

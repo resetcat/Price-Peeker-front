@@ -9,253 +9,282 @@
       style="background: var(--pp-promo-bg); color: var(--pp-promo-ink)"
     >
       <app-icon name="send" class="h-7 w-7 text-accent"></app-icon>
-      <h2 class="font-display text-lg font-bold leading-6">
-        Cenu paziņojumi Telegram
-      </h2>
+      <h2 class="font-display text-lg font-bold leading-6">{{ 'promo.title' | translate }}</h2>
       <p class="text-[13px] leading-[19px]" style="color: var(--pp-promo-muted)">
-        Saņem ziņu, tiklīdz izsekotās preces cena nokrītas.
+        {{ 'promo.text' | translate }}
       </p>
       <button
         type="button"
         class="btn btn-accent btn-sm mt-1 h-10 self-start rounded-full px-4 font-bold"
         (click)="openTelegramInstructions()"
       >
-        Kā pieslēgt
+        {{ 'promo.cta' | translate }}
       </button>
     </section>
   </aside>
 
   <section class="flex min-w-0 flex-1 flex-col gap-4 lg:gap-5">
     <!-- Results header -->
-    <div
-      *ngIf="defaultProducts.length > 0 && !(loading$ | async)"
-      class="flex flex-wrap items-end justify-between gap-3"
-    >
-      <div *ngIf="context$ | async as context" class="min-w-0">
-        <h1
-          class="font-display text-xl font-bold leading-tight tracking-tight lg:text-[30px] lg:leading-9"
-        >
-          <ng-container *ngIf="context.kind === 'search'; else categoryTitle"
-            >Rezultāti: „{{ context.label }}”</ng-container
+    @if (defaultProducts.length > 0 && !(loading$ | async)) {
+      <div class="flex flex-wrap items-end justify-between gap-3">
+        @if (context$ | async; as context) {
+          <div class="min-w-0">
+            <h1
+              class="font-display text-xl font-bold leading-tight tracking-tight lg:text-[30px] lg:leading-9"
+            >
+              @if (context.kind === 'search') {
+                {{ 'results.searchTitle' | translate: { query: context.label } }}
+              } @else {
+                {{ context.label }}
+              }
+            </h1>
+            <p class="mt-0.5 text-[13px] text-muted lg:mt-1 lg:text-sm">{{ resultSummary }}</p>
+          </div>
+        }
+        <!-- Desktop sort (mobile has it in the filter row below) -->
+        <label class="hidden items-center gap-2.5 text-[13px] text-muted lg:flex">
+          {{ 'results.sort' | translate }}
+          <select
+            class="select select-bordered select-sm h-10 rounded-xl border-line bg-base-100 text-sm font-medium text-base-content"
+            [ngModel]="sortValue"
+            (ngModelChange)="setSort($event)"
           >
-          <ng-template #categoryTitle>{{ context.label }}</ng-template>
-        </h1>
-        <p class="mt-0.5 text-[13px] text-muted lg:mt-1 lg:text-sm">{{ resultSummary }}</p>
+            @for (option of sortOptions; track option.value) {
+              <option [value]="option.value">{{ option.labelKey | translate }}</option>
+            }
+          </select>
+        </label>
       </div>
-      <!-- Desktop sort (mobile has it in the filter row below) -->
-      <label class="hidden items-center gap-2.5 text-[13px] text-muted lg:flex">
-        Kārtot
-        <select
-          class="select select-bordered select-sm h-10 rounded-xl border-line bg-base-100 text-sm font-medium text-base-content"
-          [(ngModel)]="sortValue"
-          (ngModelChange)="applyView()"
-        >
-          <option *ngFor="let option of sortOptions" [value]="option.value">{{ option.label }}</option>
-        </select>
-      </label>
-    </div>
+    }
 
     <!-- Filters: one swipeable row on mobile, wrapping on desktop -->
-    <div
-      *ngIf="defaultProducts.length > 0 && !(loading$ | async)"
-      class="pp-scroll-x -mx-4 flex gap-2 overflow-x-auto px-4 lg:mx-0 lg:flex-wrap lg:overflow-visible lg:px-0"
-      role="group"
-      aria-label="Filtri"
-    >
-      <label class="relative shrink-0 lg:hidden">
-        <span class="sr-only">Kārtot</span>
-        <app-icon
-          name="sort"
-          class="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2"
-        ></app-icon>
-        <select
-          class="select select-sm h-9 min-h-0 rounded-full border-line bg-base-100 pl-9 text-[13px] font-semibold"
-          [(ngModel)]="sortValue"
-          (ngModelChange)="applyView()"
+    @if (defaultProducts.length > 0 && !(loading$ | async)) {
+      <div
+        class="pp-scroll-x -mx-4 flex gap-2 overflow-x-auto px-4 lg:mx-0 lg:flex-wrap lg:overflow-visible lg:px-0"
+        role="group"
+        [attr.aria-label]="'results.filters' | translate"
+      >
+        <label class="relative shrink-0 lg:hidden">
+          <span class="sr-only">{{ 'results.sort' | translate }}</span>
+          <app-icon
+            name="sort"
+            class="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2"
+          ></app-icon>
+          <select
+            class="select select-sm h-9 min-h-0 rounded-full border-line bg-base-100 pl-9 text-[13px] font-semibold"
+            [ngModel]="sortValue"
+            (ngModelChange)="setSort($event)"
+          >
+            @for (option of sortOptions; track option.value) {
+              <option [value]="option.value">{{ option.labelKey | translate }}</option>
+            }
+          </select>
+        </label>
+        <button
+          type="button"
+          class="pp-chip"
+          [attr.aria-pressed]="shopFilter === null"
+          (click)="setShopFilter(null)"
         >
-          <option *ngFor="let option of sortOptions" [value]="option.value">{{ option.label }}</option>
-        </select>
-      </label>
-      <button
-        type="button"
-        class="pp-chip"
-        [attr.aria-pressed]="shopFilter === null"
-        (click)="setShopFilter(null)"
-      >
-        Visi veikali
-      </button>
-      <button
-        *ngFor="let shop of shopsInResults"
-        type="button"
-        class="pp-chip"
-        [attr.aria-pressed]="shopFilter === shop.id"
-        (click)="setShopFilter(shop.id)"
-      >
-        <span class="h-2 w-2 rounded-full" [style.background-color]="shop.color"></span>
-        {{ shop.name }}
-      </button>
-      <button
-        *ngIf="hasDiscounts"
-        type="button"
-        class="pp-chip border-dashed"
-        [attr.aria-pressed]="discountOnly"
-        (click)="toggleDiscountOnly()"
-      >
-        Tikai akcijas
-      </button>
-    </div>
+          {{ 'results.allShops' | translate }}
+        </button>
+        @for (shop of shopsInResults; track shop.id) {
+          <button
+            type="button"
+            class="pp-chip"
+            [attr.aria-pressed]="shopFilter === shop.id"
+            (click)="setShopFilter(shop.id)"
+          >
+            <span class="h-2 w-2 rounded-full" [style.background-color]="shop.color"></span>
+            {{ shop.name }}
+          </button>
+        }
+        @if (hasDiscounts) {
+          <button
+            type="button"
+            class="pp-chip border-dashed"
+            [attr.aria-pressed]="discountOnly"
+            (click)="toggleDiscountOnly()"
+          >
+            {{ 'results.dealsOnly' | translate }}
+          </button>
+        }
+      </div>
+    }
 
     <!-- Loading -->
-    <div
-      *ngIf="loading$ | async"
-      class="grid grid-cols-2 gap-3 sm:grid-cols-[repeat(auto-fill,minmax(200px,1fr))] sm:gap-5"
-      aria-busy="true"
-      aria-label="Ielādē"
-    >
-      <div *ngFor="let s of skeletons" class="pp-card flex animate-pulse flex-col gap-3 p-2.5">
-        <div class="h-36 rounded-[14px] bg-base-200 sm:h-44"></div>
-        <div class="mx-1.5 h-4 w-4/5 rounded bg-base-200"></div>
-        <div class="mx-1.5 h-4 w-1/2 rounded bg-base-200"></div>
-        <div class="mx-1.5 mb-2 h-6 w-1/3 rounded bg-base-200"></div>
+    @if (loading$ | async) {
+      <div
+        class="grid grid-cols-2 gap-3 sm:grid-cols-[repeat(auto-fill,minmax(200px,1fr))] sm:gap-5"
+        aria-busy="true"
+        [attr.aria-label]="'app.loading' | translate"
+      >
+        @for (s of skeletons; track $index) {
+          <div class="pp-card flex animate-pulse flex-col gap-3 p-2.5">
+            <div class="h-36 rounded-[14px] bg-base-200 sm:h-44"></div>
+            <div class="mx-1.5 h-4 w-4/5 rounded bg-base-200"></div>
+            <div class="mx-1.5 h-4 w-1/2 rounded bg-base-200"></div>
+            <div class="mx-1.5 mb-2 h-6 w-1/3 rounded bg-base-200"></div>
+          </div>
+        }
       </div>
-    </div>
+    }
 
     <!-- Product grid -->
-    <div
-      *ngIf="!(loading$ | async) && products.length > 0"
-      class="grid grid-cols-2 gap-3 sm:grid-cols-[repeat(auto-fill,minmax(200px,1fr))] sm:gap-5"
-    >
-      <article *ngFor="let product of products" class="pp-card flex flex-col gap-2.5 p-2 sm:p-2.5">
-        <div class="relative">
-          <button
-            type="button"
-            class="flex h-36 w-full items-center justify-center overflow-hidden rounded-[14px] bg-white sm:h-44"
-            [attr.aria-label]="product.name + ' — sīkāk'"
-            (click)="openProduct(product)"
-          >
-            <img
-              [src]="product.imgURL"
-              [alt]="product.name"
-              loading="lazy"
-              class="h-full w-full object-contain p-3"
-              [class.opacity-50]="!product.originalPrice"
-              (error)="hideBrokenImage($event)"
-            />
-          </button>
-          <span
-            class="pp-shop-tag absolute left-2 top-2 sm:left-2.5 sm:top-2.5"
-            [style.background-color]="getShop(product.id).color"
-            [style.color]="getShop(product.id).ink || '#ffffff'"
-            >{{ getShop(product.id).name }}</span
-          >
-          <span
-            *ngIf="product.discount"
-            class="badge badge-secondary absolute right-2 top-2 h-[22px] border-0 px-2 font-display text-xs font-bold sm:right-2.5 sm:top-2.5"
-            >{{ product.discount }}</span
-          >
-          <button
-            type="button"
-            class="pp-icon-btn absolute bottom-1.5 right-1.5 border border-line bg-white text-[#291334] shadow-sm hover:bg-accent hover:text-accent-content"
-            aria-label="Sekot cenai"
-            title="Sekot cenai"
-            (click)="openProduct(product)"
-          >
-            <app-icon name="bell" class="h-[18px] w-[18px]"></app-icon>
-          </button>
-        </div>
-
-        <div class="flex flex-1 flex-col gap-1.5 px-1 pb-1 sm:px-1.5 sm:pb-1.5">
-          <h3
-            class="line-clamp-2 min-h-[40px] text-[13px] font-semibold leading-5 sm:text-sm"
-            [class.text-muted]="!product.originalPrice"
-          >
-            {{ product.name }}
-          </h3>
-          <span
-            *ngIf="product.cardOwnerOnly"
-            class="inline-flex items-center gap-1.5 self-start rounded-full bg-base-200 px-2 py-0.5 text-[10px] font-semibold sm:text-[11px]"
-          >
-            <span class="h-1.5 w-1.5 rounded-full" [style.background-color]="getShop(product.id).color"></span>
-            Tikai ar {{ loyaltyCardLabel(product) }}
-          </span>
-
-          <div *ngIf="product.originalPrice; else outOfStock" class="mt-auto flex flex-col">
-            <div class="flex flex-wrap items-baseline gap-x-2">
-              <span
-                class="pp-price text-xl leading-7 sm:text-2xl"
-                [class.text-sale]="product.discountedPrice"
-                >{{ product.discountedPrice || product.originalPrice | price }}</span
+    @if (!(loading$ | async) && products.length > 0) {
+      <div class="grid grid-cols-2 gap-3 sm:grid-cols-[repeat(auto-fill,minmax(200px,1fr))] sm:gap-5">
+        @for (product of products; track $index) {
+          <article class="pp-card flex flex-col gap-2.5 p-2 sm:p-2.5">
+            <div class="relative">
+              <button
+                type="button"
+                class="flex h-36 w-full items-center justify-center overflow-hidden rounded-[14px] bg-white sm:h-44"
+                [attr.aria-label]="'product.details' | translate: { name: product.name }"
+                (click)="openProduct(product)"
               >
-              <span *ngIf="product.discountedPrice" class="text-xs text-muted line-through sm:text-[13px]">{{
-                product.originalPrice | price
-              }}</span>
+                <img
+                  [src]="product.imgURL"
+                  [alt]="product.name"
+                  loading="lazy"
+                  class="h-full w-full object-contain p-3"
+                  [class.opacity-50]="!product.originalPrice"
+                  (error)="hideBrokenImage($event)"
+                />
+              </button>
+              <span
+                class="pp-shop-tag absolute left-2 top-2 sm:left-2.5 sm:top-2.5"
+                [style.background-color]="getShop(product.id).color"
+                [style.color]="getShop(product.id).ink || '#ffffff'"
+                >{{ getShop(product.id).name }}</span
+              >
+              @if (product.discount) {
+                <span
+                  class="badge badge-secondary absolute right-2 top-2 h-[22px] border-0 px-2 font-display text-xs font-bold sm:right-2.5 sm:top-2.5"
+                  >{{ product.discount }}</span
+                >
+              }
+              <button
+                type="button"
+                class="pp-icon-btn absolute bottom-1.5 right-1.5 border border-line bg-white text-[#291334] shadow-sm hover:bg-accent hover:text-accent-content"
+                [attr.aria-label]="'product.follow' | translate"
+                [title]="'product.follow' | translate"
+                (click)="openProduct(product)"
+              >
+                <app-icon name="bell" class="h-[18px] w-[18px]"></app-icon>
+              </button>
             </div>
-            <span class="text-[11px] text-muted sm:text-xs">{{ product.pricePerUnit }}</span>
-          </div>
-          <ng-template #outOfStock>
-            <span class="mt-auto text-[13px] font-semibold text-error">Prece nav pieejama</span>
-          </ng-template>
-        </div>
-      </article>
-    </div>
+            <div class="flex flex-1 flex-col gap-1.5 px-1 pb-1 sm:px-1.5 sm:pb-1.5">
+              <h3
+                class="line-clamp-2 min-h-[40px] text-[13px] font-semibold leading-5 sm:text-sm"
+                [class.text-muted]="!product.originalPrice"
+              >
+                {{ product.name }}
+              </h3>
+              @if (product.cardOwnerOnly) {
+                <span
+                  class="inline-flex items-center gap-1.5 self-start rounded-full bg-base-200 px-2 py-0.5 text-[10px] font-semibold sm:text-[11px]"
+                >
+                  <span
+                    class="h-1.5 w-1.5 rounded-full"
+                    [style.background-color]="getShop(product.id).color"
+                  ></span>
+                  @if (loyaltyCard(product); as card) {
+                    {{ 'product.cardOnly' | translate: { card: card } }}
+                  } @else {
+                    {{ 'product.cardOnlyGeneric' | translate }}
+                  }
+                </span>
+              }
+              @if (product.originalPrice) {
+                <div class="mt-auto flex flex-col">
+                  <div class="flex flex-wrap items-baseline gap-x-2">
+                    <span
+                      class="pp-price text-xl leading-7 sm:text-2xl"
+                      [class.text-sale]="product.discountedPrice"
+                      >{{ product.discountedPrice || product.originalPrice | price }}</span
+                    >
+                    @if (product.discountedPrice) {
+                      <span class="text-xs text-muted line-through sm:text-[13px]">{{
+                        product.originalPrice | price
+                      }}</span>
+                    }
+                  </div>
+                  <span class="text-[11px] text-muted sm:text-xs">{{ product.pricePerUnit }}</span>
+                </div>
+              } @else {
+                <span class="mt-auto text-[13px] font-semibold text-error">{{
+                  'product.unavailable' | translate
+                }}</span>
+              }
+            </div>
+          </article>
+        }
+      </div>
+    }
 
     <!-- Filters hide everything -->
-    <div
-      *ngIf="!(loading$ | async) && defaultProducts.length > 0 && products.length === 0"
-      class="pp-card flex flex-col items-center gap-3 px-6 py-12 text-center"
-    >
-      <p class="font-display text-lg font-bold">Ar šiem filtriem nekas neatbilst</p>
-      <button type="button" class="pp-outline-btn" (click)="clearFilters()">
-        Notīrīt filtrus
-      </button>
-    </div>
+    @if (!(loading$ | async) && defaultProducts.length > 0 && products.length === 0) {
+      <div class="pp-card flex flex-col items-center gap-3 px-6 py-12 text-center">
+        <p class="font-display text-lg font-bold">{{ 'results.noMatch' | translate }}</p>
+        <button type="button" class="pp-outline-btn" (click)="clearFilters()">
+          {{ 'results.clearFilters' | translate }}
+        </button>
+      </div>
+    }
 
     <!-- Nothing found -->
-    <div
-      *ngIf="!(loading$ | async) && searchState === searchStates.NotFound"
-      class="flex flex-col items-center gap-4 py-10 text-center"
-    >
-      <img src="/assets/images/not-found.png" alt="" class="w-48 max-w-full" />
-      <p class="font-display text-2xl font-bold lg:text-3xl">
-        {{ errorMessage || "Nekas nav atrasts :(" }}
-      </p>
-      <p class="text-sm text-muted">Pamēģini citu vārdu vai pārslēdz veikalu veidu.</p>
-    </div>
+    @if (!(loading$ | async) && searchState === searchStates.NotFound) {
+      <div class="flex flex-col items-center gap-4 py-10 text-center">
+        <img src="/assets/images/not-found.png" alt="" class="w-48 max-w-full" />
+        <p class="font-display text-2xl font-bold lg:text-3xl">
+          {{ (loadFailed ? 'results.error' : 'results.notFound') | translate }}
+        </p>
+        <p class="text-sm text-muted">{{ 'results.notFoundHint' | translate }}</p>
+        @if (lang.current() !== 'lv') {
+          <p class="max-w-md text-sm text-muted">{{ 'search.languageHint' | translate }}</p>
+        }
+      </div>
+    }
 
     <!-- Before the first search -->
-    <div
-      *ngIf="!(loading$ | async) && searchState === searchStates.Initial && defaultProducts.length === 0"
-      class="pp-card flex flex-col items-center gap-3 px-6 py-14 text-center lg:py-20"
-    >
-      <span class="flex h-14 w-14 items-center justify-center rounded-full bg-brand-soft text-link">
-        <app-icon name="search" class="h-7 w-7"></app-icon>
-      </span>
-      <h1 class="font-display text-2xl font-bold lg:text-3xl">Ko meklēsim šodien?</h1>
-      <p class="max-w-md text-sm text-muted">
-        Ieraksti preces nosaukumu meklēšanas laukā vai izvēlies kategoriju — salīdzināsim cenas
-        dažādos veikalos.
-      </p>
-    </div>
+    @if (!(loading$ | async) && searchState === searchStates.Initial && defaultProducts.length === 0) {
+      <div class="pp-card flex flex-col items-center gap-3 px-6 py-14 text-center lg:py-20">
+        <span class="flex h-14 w-14 items-center justify-center rounded-full bg-brand-soft text-link">
+          <app-icon name="search" class="h-7 w-7"></app-icon>
+        </span>
+        <h1 class="font-display text-2xl font-bold lg:text-3xl">{{ 'results.emptyTitle' | translate }}</h1>
+        <p class="max-w-md text-sm text-muted">{{ 'results.emptyText' | translate }}</p>
+        @if (lang.current() !== 'lv') {
+          <p class="max-w-md text-sm text-muted">{{ 'search.languageHint' | translate }}</p>
+        }
+      </div>
+    }
 
     <!-- Category pages -->
-    <nav
-      *ngIf="(categoryId$ | async) && !(loading$ | async) && defaultProducts.length > 0"
-      class="flex items-center justify-center gap-2 pt-2"
-      aria-label="Lapas"
-    >
-      <button type="button" class="pp-outline-btn" [disabled]="categoryPage <= 1" (click)="previousePage()">
-        <app-icon name="arrow-left" class="h-4 w-4"></app-icon>
-        Iepriekšējā
-      </button>
-      <span
-        class="inline-flex h-11 min-w-[44px] items-center justify-center rounded-full bg-base-content px-3 font-bold text-base-200"
-        aria-current="page"
-        >{{ categoryPage }}</span
+    @if ((categoryId$ | async) && !(loading$ | async) && defaultProducts.length > 0) {
+      <nav
+        class="flex items-center justify-center gap-2 pt-2"
+        [attr.aria-label]="'results.pages' | translate"
       >
-      <button type="button" class="pp-outline-btn" (click)="nextPage()">
-        Nākamā
-        <app-icon name="arrow-right" class="h-4 w-4"></app-icon>
-      </button>
-    </nav>
+        <button
+          type="button"
+          class="pp-outline-btn"
+          [disabled]="categoryPage <= 1"
+          (click)="previousePage()"
+        >
+          <app-icon name="arrow-left" class="h-4 w-4"></app-icon>
+          {{ 'results.prev' | translate }}
+        </button>
+        <span
+          class="inline-flex h-11 min-w-[44px] items-center justify-center rounded-full bg-base-content px-3 font-bold text-base-200"
+          aria-current="page"
+          >{{ categoryPage }}</span
+        >
+        <button type="button" class="pp-outline-btn" (click)="nextPage()">
+          {{ 'results.next' | translate }}
+          <app-icon name="arrow-right" class="h-4 w-4"></app-icon>
+        </button>
+      </nav>
+    }
   </section>
 </div>

@@ -5,7 +5,10 @@ import { Pipe, PipeTransform } from '@angular/core';
  * ("1.49€", "1.49", 1.49, "12,99 €") as "1.49 €".
  * Anything that isn't a number is shown as it came.
  */
-@Pipe({ name: 'price' })
+@Pipe({
+    name: 'price',
+    standalone: false
+})
 export class PricePipe implements PipeTransform {
   transform(value: unknown): string {
     if (value === null || value === undefined || value === '') {

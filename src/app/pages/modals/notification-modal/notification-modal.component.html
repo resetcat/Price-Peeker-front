@@ -6,210 +6,235 @@
   <button
     type="button"
     class="pp-icon-btn absolute right-3 top-3 z-10 bg-base-200 hover:bg-base-300"
-    aria-label="Aizvērt"
+    [attr.aria-label]="'app.close' | translate"
     (click)="onNoClick()"
   >
     <app-icon name="x" class="h-[18px] w-[18px]"></app-icon>
   </button>
 
   <!-- Product column -->
-  <div *ngIf="data" class="flex w-full shrink-0 flex-col gap-4 md:w-[340px]">
-    <div class="flex gap-4 pr-12 md:pr-0">
-      <div
-        class="relative flex h-28 w-28 shrink-0 items-center justify-center rounded-2xl border border-card-line bg-white p-2 md:h-[132px] md:w-[132px]"
-      >
-        <img [src]="data.imgURL" [alt]="data.name" class="h-full w-full object-contain" />
-        <span
-          *ngIf="data.discount"
-          class="badge badge-secondary absolute right-1.5 top-1.5 h-5 border-0 px-1.5 font-display text-[11px] font-bold"
-          >{{ data.discount }}</span
+  @if (data) {
+    <div class="flex w-full shrink-0 flex-col gap-4 md:w-[340px]">
+      <div class="flex gap-4 pr-12 md:pr-0">
+        <div
+          class="relative flex h-28 w-28 shrink-0 items-center justify-center rounded-2xl border border-card-line bg-white p-2 md:h-[132px] md:w-[132px]"
         >
-      </div>
-      <div class="flex min-w-0 flex-col gap-1.5">
-        <span
-          *ngIf="shop"
-          class="pp-shop-tag self-start"
-          [style.background-color]="shop.color"
-          [style.color]="shop.ink || '#ffffff'"
-          >{{ shop.name }}</span
-        >
-        <h2
-          class="font-display text-lg font-bold leading-tight md:text-[22px] md:leading-[26px]"
-          [class.text-muted]="!data.originalPrice"
-        >
-          {{ data.name }}
-        </h2>
-        <div *ngIf="data.originalPrice; else outOfStock" class="flex flex-col">
-          <div class="flex flex-wrap items-baseline gap-x-2">
-            <span class="pp-price text-2xl md:text-[28px]" [class.text-sale]="data.discountedPrice">{{
-              data.discountedPrice || data.originalPrice | price
-            }}</span>
-            <span *ngIf="data.discountedPrice" class="text-sm text-muted line-through">{{
-              data.originalPrice | price
-            }}</span>
-          </div>
-          <span class="text-[13px] text-muted">{{ data.pricePerUnit }}</span>
-        </div>
-        <ng-template #outOfStock>
-          <span class="text-sm font-semibold text-error">Prece nav pieejama</span>
-        </ng-template>
-        <span
-          *ngIf="data.cardOwnerOnly"
-          class="inline-flex items-center gap-1.5 self-start rounded-full bg-base-200 px-2 py-0.5 text-[11px] font-semibold"
-        >
-          <span class="h-1.5 w-1.5 rounded-full" [style.background-color]="shop?.color"></span>
-          Tikai ar {{ loyaltyCardLabel }}
-        </span>
-      </div>
-    </div>
-
-    <!-- Follow price -->
-    <ng-container *ngIf="isLoggedIn; else loginToFollow">
-      <button
-        type="button"
-        class="btn h-12 min-h-0 rounded-2xl text-[15px] font-bold"
-        [class.btn-accent]="!isFollowing"
-        [class.bg-base-200]="isFollowing"
-        [disabled]="isFollowing || adding"
-        (click)="addNotification(data)"
-      >
-        <span *ngIf="adding" class="loading loading-spinner loading-sm"></span>
-        <app-icon name="bell" [filled]="isFollowing" class="h-[18px] w-[18px]"></app-icon>
-        {{ isFollowing ? "Tu seko šīs preces cenai" : "Sekot cenai" }}
-      </button>
-    </ng-container>
-    <ng-template #loginToFollow>
-      <a
-        routerLink="/login"
-        class="btn btn-accent h-12 min-h-0 rounded-2xl text-[15px] font-bold"
-        (click)="onNoClick()"
-      >
-        <app-icon name="bell" class="h-[18px] w-[18px]"></app-icon>
-        Ienāc, lai sekotu cenai
-      </a>
-    </ng-template>
-
-    <!-- Nutrition info -->
-    <section *ngIf="hasNutritionInfo" class="flex flex-col gap-1.5">
-      <h3 class="pp-overline">
-        Uzturvērtība
-        <span *ngIf="nutrition && nutrition.per" class="font-medium normal-case tracking-normal">
-          uz {{ nutrition.per }}
-        </span>
-      </h3>
-
-      <div *ngIf="nutritionLoading" class="flex justify-center py-4">
-        <span class="loading loading-spinner text-primary"></span>
-      </div>
-
-      <p *ngIf="nutritionError" class="text-sm text-error">
-        Neizdevās ielādēt uzturvērtību.
-      </p>
-
-      <ng-container *ngIf="nutrition">
-        <p *ngIf="nutrition.rows.length === 0" class="text-sm text-muted">
-          Uzturvērtība nav pieejama.
-        </p>
-        <table *ngIf="nutrition.rows.length > 0" class="w-full text-[13px]">
-          <tbody>
-            <tr
-              *ngFor="let row of nutrition.rows; let last = last"
-              class="border-card-line"
-              [class.border-b]="!last"
+          <img [src]="data.imgURL" [alt]="data.name" class="h-full w-full object-contain" />
+          @if (data.discount) {
+            <span
+              class="badge badge-secondary absolute right-1.5 top-1.5 h-5 border-0 px-1.5 font-display text-[11px] font-bold"
+              >{{ data.discount }}</span
             >
-              <td
-                class="py-1.5 first-letter:uppercase"
-                [ngClass]="{ 'pl-4 text-muted': row.isSubItem }"
-              >
-                {{ row.name }}
-              </td>
-              <td
-                class="whitespace-nowrap py-1.5 text-right tabular-nums"
-                [class.text-muted]="row.isSubItem"
-              >
-                {{ row.value }}
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </ng-container>
-    </section>
-  </div>
-
-  <!-- Alerts column -->
-  <section *ngIf="isLoggedIn" class="flex min-w-0 flex-1 flex-col gap-3.5 md:pt-1">
-    <div class="flex items-center gap-2.5 pr-12">
-      <h3 class="font-display text-xl font-bold leading-[26px]">Mani paziņojumi</h3>
-      <span class="rounded-full bg-base-200 px-2.5 text-xs font-semibold leading-[22px] text-muted"
-        >{{ notifications.length }} / {{ maxNotifications }}</span
-      >
-    </div>
-
-    <div *ngIf="errorMessage" role="alert" class="rounded-xl bg-error/10 px-4 py-3 text-sm text-error">
-      {{ errorMessage }}
-    </div>
-
-    <p
-      *ngIf="notifications.length === 0"
-      class="rounded-2xl border border-dashed border-line px-4 py-6 text-center text-sm text-muted"
-    >
-      Vēl nav neviena paziņojuma. Atver preci un spied „Sekot cenai”.
-    </p>
-
-    <ul *ngIf="notifications.length > 0" class="flex flex-col gap-2">
-      <li
-        *ngFor="let notification of notifications; let i = index"
-        class="flex items-center gap-3 rounded-2xl border border-card-line py-2.5 pl-3.5 pr-2"
-        [style.background]="notification.isTrigered ? 'var(--pp-ok-bg)' : null"
-      >
-        <div class="flex min-w-0 flex-1 flex-col gap-0.5">
-          <span class="truncate text-sm font-semibold" [title]="notification.name">{{
-            notification.name
-          }}</span>
-          <span class="truncate text-xs text-muted"
-            >{{ notification.shop }} · {{ notification.date | date: "dd.MM.yyyy" }}</span
-          >
+          }
         </div>
-        <span class="pp-price shrink-0 text-base">{{ notification.price | price }}</span>
-        <span
-          class="hidden shrink-0 rounded-full px-2.5 py-0.5 text-xs font-semibold sm:inline"
-          [style.background]="notification.isTrigered ? 'var(--pp-ok-bg)' : null"
-          [style.color]="notification.isTrigered ? 'var(--pp-ok-ink)' : null"
-          [class.bg-base-200]="!notification.isTrigered"
-          [class.text-muted]="!notification.isTrigered"
-          >{{ notification.isTrigered ? "Cena kritās" : "Gaida" }}</span
-        >
+        <div class="flex min-w-0 flex-col gap-1.5">
+          @if (shop) {
+            <span
+              class="pp-shop-tag self-start"
+              [style.background-color]="shop.color"
+              [style.color]="shop.ink || '#ffffff'"
+              >{{ shop.name }}</span
+            >
+          }
+          <h2
+            class="font-display text-lg font-bold leading-tight md:text-[22px] md:leading-[26px]"
+            [class.text-muted]="!data.originalPrice"
+          >
+            {{ data.name }}
+          </h2>
+          @if (data.originalPrice) {
+            <div class="flex flex-col">
+              <div class="flex flex-wrap items-baseline gap-x-2">
+                <span class="pp-price text-2xl md:text-[28px]" [class.text-sale]="data.discountedPrice">{{
+                  data.discountedPrice || data.originalPrice | price
+                }}</span>
+                @if (data.discountedPrice) {
+                  <span class="text-sm text-muted line-through">{{ data.originalPrice | price }}</span>
+                }
+              </div>
+              <span class="text-[13px] text-muted">{{ data.pricePerUnit }}</span>
+            </div>
+          } @else {
+            <span class="text-sm font-semibold text-error">{{ 'product.unavailable' | translate }}</span>
+          }
+          @if (data.cardOwnerOnly) {
+            <span
+              class="inline-flex items-center gap-1.5 self-start rounded-full bg-base-200 px-2 py-0.5 text-[11px] font-semibold"
+            >
+              <span class="h-1.5 w-1.5 rounded-full" [style.background-color]="shop?.color"></span>
+              @if (loyaltyCard; as card) {
+                {{ 'product.cardOnly' | translate: { card: card } }}
+              } @else {
+                {{ 'product.cardOnlyGeneric' | translate }}
+              }
+            </span>
+          }
+        </div>
+      </div>
+
+      <!-- Follow price -->
+      @if (isLoggedIn) {
         <button
           type="button"
-          class="pp-icon-btn rounded-xl text-muted hover:bg-base-200 hover:text-error"
-          aria-label="Dzēst paziņojumu"
-          (click)="deleteNotification(i)"
+          class="btn h-12 min-h-0 rounded-2xl text-[15px] font-bold"
+          [class.btn-accent]="!isFollowing"
+          [class.bg-base-200]="isFollowing"
+          [disabled]="isFollowing || adding"
+          (click)="addNotification(data)"
         >
-          <app-icon name="trash" class="h-[18px] w-[18px]"></app-icon>
+          @if (adding) {
+            <span class="loading loading-spinner loading-sm"></span>
+          }
+          <app-icon name="bell" [filled]="isFollowing" class="h-[18px] w-[18px]"></app-icon>
+          {{ (isFollowing ? 'product.following' : 'product.follow') | translate }}
         </button>
-      </li>
-    </ul>
+      } @else {
+        <a
+          routerLink="/login"
+          [queryParams]="loginParams"
+          class="btn btn-accent h-12 min-h-0 rounded-2xl text-[15px] font-bold"
+          (click)="onNoClick()"
+        >
+          <app-icon name="bell" class="h-[18px] w-[18px]"></app-icon>
+          {{ 'product.loginToFollow' | translate }}
+        </a>
+      }
 
-    <div class="mt-auto flex flex-wrap items-center gap-3 rounded-2xl bg-brand-soft px-4 py-3.5">
-      <app-icon name="send" class="h-[22px] w-[22px] text-link"></app-icon>
-      <p class="min-w-[180px] flex-1 text-[13px] leading-[18px]">
-        Paziņojumi pienāk Telegram botā <strong>@price_peeker_bot</strong>.
-      </p>
-      <button type="button" class="text-[13px] font-bold text-link" (click)="openTelegramInstructions()">
-        Kā pieslēgt →
-      </button>
+      <!-- Nutrition info -->
+      @if (hasNutritionInfo) {
+        <section class="flex flex-col gap-1.5">
+          <h3 class="pp-overline">
+            {{ 'nutrition.title' | translate }}
+            @if (nutrition && nutrition.per) {
+              <span class="font-medium normal-case tracking-normal">
+                {{ 'nutrition.per' | translate: { amount: nutrition.per } }}
+              </span>
+            }
+          </h3>
+          @if (nutritionLoading) {
+            <div class="flex justify-center py-4">
+              <span class="loading loading-spinner text-primary"></span>
+            </div>
+          }
+          @if (nutritionError) {
+            <p class="text-sm text-error">{{ 'nutrition.loadError' | translate }}</p>
+          }
+          @if (nutrition) {
+            @if (nutrition.rows.length === 0) {
+              <p class="text-sm text-muted">{{ 'nutrition.none' | translate }}</p>
+            } @else {
+              <table class="w-full text-[13px]">
+                <tbody>
+                  @for (row of nutrition.rows; track $index; let last = $last) {
+                    <tr class="border-card-line" [class.border-b]="!last">
+                      <td
+                        class="py-1.5 first-letter:uppercase"
+                        [ngClass]="{ 'pl-4 text-muted': row.isSubItem }"
+                      >
+                        @if (nutrientLabelKey(row.name); as key) {
+                          {{ key | translate }}
+                        } @else {
+                          {{ row.name }}
+                        }
+                      </td>
+                      <td
+                        class="whitespace-nowrap py-1.5 text-right tabular-nums"
+                        [class.text-muted]="row.isSubItem"
+                      >
+                        {{ row.value }}
+                      </td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            }
+          }
+        </section>
+      }
     </div>
-  </section>
+  }
+
+  <!-- Alerts column -->
+  @if (isLoggedIn) {
+    <section class="flex min-w-0 flex-1 flex-col gap-3.5 md:pt-1">
+      <div class="flex items-center gap-2.5 pr-12">
+        <h3 class="font-display text-xl font-bold leading-[26px]">{{ 'alerts.title' | translate }}</h3>
+        <span class="rounded-full bg-base-200 px-2.5 text-xs font-semibold leading-[22px] text-muted"
+          >{{ notifications.length }} / {{ maxNotifications }}</span
+        >
+      </div>
+      @if (errorKey) {
+        <div role="alert" class="rounded-xl bg-error/10 px-4 py-3 text-sm text-error">
+          {{ errorKey | translate: errorParams }}
+        </div>
+      }
+      @if (notifications.length === 0) {
+        <p class="rounded-2xl border border-dashed border-line px-4 py-6 text-center text-sm text-muted">
+          {{ 'alerts.empty' | translate }}
+        </p>
+      } @else {
+        <ul class="flex flex-col gap-2">
+          @for (notification of notifications; track notification.id; let i = $index) {
+            <li
+              class="flex items-center gap-3 rounded-2xl border border-card-line py-2.5 pl-3.5 pr-2"
+              [style.background]="notification.isTrigered ? 'var(--pp-ok-bg)' : null"
+            >
+              <div class="flex min-w-0 flex-1 flex-col gap-0.5">
+                <span class="truncate text-sm font-semibold" [title]="notification.name">{{
+                  notification.name
+                }}</span>
+                <span class="truncate text-xs text-muted"
+                  >{{ notification.shop }} · {{ notification.date | date: 'dd.MM.yyyy' }}</span
+                >
+              </div>
+              <span class="pp-price shrink-0 text-base">{{ notification.price | price }}</span>
+              <span
+                class="hidden shrink-0 rounded-full px-2.5 py-0.5 text-xs font-semibold sm:inline"
+                [style.background]="notification.isTrigered ? 'var(--pp-ok-bg)' : null"
+                [style.color]="notification.isTrigered ? 'var(--pp-ok-ink)' : null"
+                [class.bg-base-200]="!notification.isTrigered"
+                [class.text-muted]="!notification.isTrigered"
+                >{{ (notification.isTrigered ? 'alerts.dropped' : 'alerts.waiting') | translate }}</span
+              >
+              <button
+                type="button"
+                class="pp-icon-btn rounded-xl text-muted hover:bg-base-200 hover:text-error"
+                [attr.aria-label]="'alerts.delete' | translate"
+                (click)="deleteNotification(i)"
+              >
+                <app-icon name="trash" class="h-[18px] w-[18px]"></app-icon>
+              </button>
+            </li>
+          }
+        </ul>
+      }
+      <div class="mt-auto flex flex-wrap items-center gap-3 rounded-2xl bg-brand-soft px-4 py-3.5">
+        <app-icon name="send" class="h-[22px] w-[22px] text-link"></app-icon>
+        <p class="min-w-[180px] flex-1 text-[13px] leading-[18px]">
+          {{ 'alerts.telegramHint' | translate }} <strong>&#64;price_peeker_bot</strong>.
+        </p>
+        <button type="button" class="text-[13px] font-bold text-link" (click)="openTelegramInstructions()">
+          {{ 'alerts.howTo' | translate }}
+        </button>
+      </div>
+    </section>
+  }
 
   <!-- Not logged in and no product: nothing to show but a way in -->
-  <section *ngIf="!isLoggedIn && !data" class="flex w-full flex-col items-center gap-3 py-6 text-center">
-    <span class="flex h-14 w-14 items-center justify-center rounded-full bg-brand-soft text-link">
-      <app-icon name="bell" class="h-7 w-7"></app-icon>
-    </span>
-    <h3 class="font-display text-xl font-bold">Cenu paziņojumi</h3>
-    <p class="max-w-sm text-sm text-muted">
-      Ienāc, lai sekotu preču cenām un saņemtu ziņu Telegram, kad cena nokrītas.
-    </p>
-    <a routerLink="/login" class="btn btn-accent rounded-full px-6 font-bold" (click)="onNoClick()">Ienākt</a>
-  </section>
+  @if (!isLoggedIn && !data) {
+    <section class="flex w-full flex-col items-center gap-3 py-6 text-center">
+      <span class="flex h-14 w-14 items-center justify-center rounded-full bg-brand-soft text-link">
+        <app-icon name="bell" class="h-7 w-7"></app-icon>
+      </span>
+      <h3 class="font-display text-xl font-bold">{{ 'alerts.guestTitle' | translate }}</h3>
+      <p class="max-w-sm text-sm text-muted">{{ 'alerts.guestText' | translate }}</p>
+      <a
+        routerLink="/login"
+        [queryParams]="loginParams"
+        class="btn btn-accent rounded-full px-6 font-bold"
+        (click)="onNoClick()"
+        >{{ 'alerts.login' | translate }}</a
+      >
+    </section>
+  }
 </div>

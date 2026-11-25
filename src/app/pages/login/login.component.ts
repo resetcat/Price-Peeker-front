@@ -1,22 +1,25 @@
-import { Component } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { safeReturnUrl } from 'src/app/config/search-params';
 import { AuthService } from 'src/app/services/auth.service';
 
 @Component({
-  selector: 'app-login',
-  templateUrl: './login.component.html',
-  styleUrls: ['./login.component.css'],
+    selector: 'app-login',
+    templateUrl: './login.component.html',
+    styleUrls: ['./login.component.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class LoginComponent {
   username: string = '';
   password: string = '';
   showError: boolean = false;
   showSuccess: boolean = false;
-  errorMessage: string = '';
 
   constructor(
     private readonly authService: AuthService,
-    private router: Router
+    private router: Router,
+    private route: ActivatedRoute
   ) {}
 
   login() {
@@ -24,18 +27,17 @@ export class LoginComponent {
       next: (response) => {
         this.showLoginSuccess();
         setTimeout(() => {
-          this.router.navigate(['']);
+          // Back to where the user came from (e.g. their search results).
+          this.router.navigateByUrl(
+            safeReturnUrl(this.route.snapshot.queryParamMap.get('returnUrl'))
+          );
         }, 1500);
       },
-      error: (error) => {
-        this.errorMessage = error.message;
-        this.showLoginError();
-      },
+      error: () => this.showLoginError(),
     });
   }
   private showLoginError() {
     this.showError = true;
-    this.errorMessage = 'Error! Authentication failed.';
     setTimeout(() => (this.showError = false), 3000);
   }
 

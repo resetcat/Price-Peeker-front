@@ -3,27 +3,27 @@
     <div class="flex max-w-xs flex-col gap-2">
       <span class="pp-logo w-[130px]" role="img" aria-label="Price Peeker"></span>
       <p class="text-[13px] leading-5 text-muted">
-        Salīdzini cenas Latvijas veikalos un ietaupi.
+        {{ 'footer.tagline' | translate }}
       </p>
     </div>
 
     <div class="flex flex-wrap gap-x-14 gap-y-8">
       <nav class="flex flex-col items-start gap-2 text-sm" aria-labelledby="footer-account">
-        <h6 id="footer-account" class="pp-overline">Konts</h6>
-        <a class="hover:text-link" routerLink="/login">Ienākt</a>
-        <a class="hover:text-link" routerLink="/register">Reģistrēties</a>
+        <h6 id="footer-account" class="pp-overline">{{ 'footer.account' | translate }}</h6>
+        <a class="hover:text-link" routerLink="/login" [queryParams]="loginParams">{{ 'footer.login' | translate }}</a>
+        <a class="hover:text-link" routerLink="/register">{{ 'footer.register' | translate }}</a>
       </nav>
       <nav class="flex flex-col items-start gap-2 text-sm" aria-labelledby="footer-explore">
-        <h6 id="footer-explore" class="pp-overline">Izpēti</h6>
+        <h6 id="footer-explore" class="pp-overline">{{ 'footer.explore' | translate }}</h6>
         <button type="button" class="hover:text-link" (click)="openTelegramInstructions()">
-          Telegram instrukcija
+          {{ 'footer.telegram' | translate }}
         </button>
         <button type="button" class="hover:text-link" (click)="openNotifications()">
-          Paziņojumi
+          {{ 'footer.notifications' | translate }}
         </button>
       </nav>
       <nav class="flex flex-col gap-2 text-sm" aria-labelledby="footer-contacts">
-        <h6 id="footer-contacts" class="pp-overline">Kontakti</h6>
+        <h6 id="footer-contacts" class="pp-overline">{{ 'footer.contacts' | translate }}</h6>
         <div class="flex gap-2">
           <a
             href="https://www.linkedin.com/in/mihails-dudarevs/"
@@ -36,7 +36,7 @@
           </a>
           <a
             href="mailto:dudarevs.mihails@gmail.com"
-            aria-label="E-pasts"
+            [attr.aria-label]="'footer.email' | translate"
             class="pp-icon-btn h-10 w-10 rounded-xl bg-base-100 hover:text-link"
           >
             <app-icon name="mail" class="h-[18px] w-[18px]"></app-icon>

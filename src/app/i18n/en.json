@@ -1,0 +1,163 @@
+{
+  "app": {
+    "home": "Price Peeker — home",
+    "language": "Language",
+    "close": "Close",
+    "loading": "Loading"
+  },
+  "shopType": {
+    "group": "Shop type",
+    "grocery": "Groceries",
+    "spirit": "Alcohol",
+    "pharmacy": "Pharmacy"
+  },
+  "search": {
+    "label": "Search products",
+    "placeholder": "search...",
+    "clear": "Clear search",
+    "submit": "Search",
+    "languageHint": "Shops list products in Latvian — search in Latvian or by brand name (e.g. “piens” for milk)."
+  },
+  "header": {
+    "themeLight": "Switch to light mode",
+    "themeDark": "Switch to dark mode",
+    "notifications": "My alerts",
+    "logout": "Log out",
+    "login": "Log in"
+  },
+  "nav": {
+    "main": "Main navigation",
+    "search": "Search",
+    "categories": "Categories",
+    "notifications": "Alerts",
+    "logout": "Log out",
+    "login": "Log in",
+    "closeCategories": "Close categories"
+  },
+  "categories": {
+    "title": "Categories",
+    "loadError": "Couldn't load categories."
+  },
+  "promo": {
+    "title": "Price alerts on Telegram",
+    "text": "Get a message as soon as the price of a product you follow drops.",
+    "cta": "How to connect"
+  },
+  "results": {
+    "searchTitle": "Results for “{{query}}”",
+    "categoryPlaceholder": "Category",
+    "sort": "Sort",
+    "filters": "Filters",
+    "allShops": "All shops",
+    "dealsOnly": "Deals only",
+    "noMatch": "Nothing matches these filters",
+    "clearFilters": "Clear filters",
+    "notFound": "Nothing found :(",
+    "notFoundHint": "Try another word or switch the shop type.",
+    "error": "Couldn't load the results",
+    "emptyTitle": "What are we looking for today?",
+    "emptyText": "Type a product name in the search box or pick a category — we'll compare prices across shops.",
+    "pages": "Pages",
+    "prev": "Previous",
+    "next": "Next",
+    "items": {
+      "one": "{{count}} product",
+      "other": "{{count}} products"
+    },
+    "shops": {
+      "one": "from {{count}} shop",
+      "other": "from {{count}} shops"
+    }
+  },
+  "sort": {
+    "default": "default",
+    "priceAsc": "lowest price first",
+    "priceDesc": "highest price first",
+    "discount": "deals first",
+    "pricePerUnitAsc": "lowest price per kg/pc",
+    "pricePerUnitDesc": "highest price per kg/pc"
+  },
+  "product": {
+    "details": "{{name}} — details",
+    "follow": "Follow price",
+    "following": "You're following this price",
+    "loginToFollow": "Log in to follow the price",
+    "unavailable": "Not available",
+    "cardOnly": "{{card}}-card only",
+    "cardOnlyGeneric": "Loyalty card only"
+  },
+  "nutrition": {
+    "title": "Nutrition",
+    "per": "per {{amount}}",
+    "loadError": "Couldn't load nutrition info.",
+    "none": "Nutrition info not available.",
+    "energy": "Energy",
+    "fat": "Fat",
+    "saturates": "of which saturates",
+    "carbs": "Carbohydrate",
+    "sugars": "of which sugars",
+    "fibre": "Fibre",
+    "protein": "Protein",
+    "salt": "Salt"
+  },
+  "alerts": {
+    "title": "My alerts",
+    "empty": "No alerts yet. Open a product and tap “Follow price”.",
+    "dropped": "Price dropped",
+    "waiting": "Waiting",
+    "delete": "Delete alert",
+    "telegramHint": "Alerts arrive via the Telegram bot",
+    "howTo": "How to connect →",
+    "guestTitle": "Price alerts",
+    "guestText": "Log in to follow prices and get a Telegram message when a price drops.",
+    "login": "Log in",
+    "limit": "You can follow up to {{max}} products. Delete an alert to add a new one.",
+    "addError": "Couldn't add the alert.",
+    "loginRequired": "Log in to see your alerts."
+  },
+  "telegram": {
+    "title": "Setting up alerts with Telegram",
+    "intro": "Just a few simple steps to start using our Telegram bot:",
+    "step1": "Open our bot directly with this link:",
+    "step1End": "and follow the instructions.",
+    "step2": "Or search Telegram for our bot by its username:",
+    "step2End": ", and start a chat by tapping “Start”.",
+    "step3": "Link your Price Peeker account by sending this message:",
+    "step3Command": "/register your_username",
+    "step3End": "(replace “your_username” with your actual username).",
+    "step4": "If all went well, the bot will reply “User added successfully”, and from then on you'll get alerts about price changes for the products you follow.",
+    "close": "Close",
+    "open": "Open Telegram"
+  },
+  "footer": {
+    "tagline": "Compare prices in Latvian shops and save.",
+    "account": "Account",
+    "login": "Log in",
+    "register": "Sign up",
+    "explore": "Explore",
+    "telegram": "Telegram guide",
+    "notifications": "Alerts",
+    "contacts": "Contact",
+    "email": "Email"
+  },
+  "auth": {
+    "loginTitle": "Log in",
+    "loginSubtitle": "To follow prices and get alerts.",
+    "username": "Username",
+    "password": "Password",
+    "repeatPassword": "Confirm password",
+    "loginButton": "Log in",
+    "noAccount": "No account?",
+    "registerLink": "Sign up",
+    "loginSuccess": "You're logged in!",
+    "loginError": "Couldn't log in. Check your username and password.",
+    "registerTitle": "Sign up",
+    "registerSubtitle": "Create an account to follow prices.",
+    "registerButton": "Sign up",
+    "passwordsMismatch": "Passwords don't match.",
+    "registerSuccess": "Registration successful!",
+    "registerError": "Registration failed.",
+    "haveAccount": "Already have an account?",
+    "loginLink": "Log in"
+  }
+}

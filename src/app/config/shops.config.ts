@@ -3,7 +3,8 @@
  *
  * Adding a new store type (e.g. Aptiekas / pharmacy):
  *   1. add its shops to SHOPS with `type: 'pharmacy'`
- *   2. uncomment the 'pharmacy' entry in SHOP_TYPES
+ *   2. uncomment the 'pharmacy' entry in SHOP_TYPES (its texts already exist
+ *      in src/app/i18n/*.json as shopType.pharmacy)
  * The header switch, shop tags, loyalty-card labels and filter chips pick it up
  * automatically — no template or Tailwind changes needed.
  */
@@ -19,19 +20,20 @@ export interface ShopInfo {
   color: string;
   /** Text colour on the tag; defaults to white. */
   ink?: string;
-  /** Label for card-only prices, e.g. "R-karti" → "Tikai ar R-karti". */
+  /** Loyalty card name for card-only prices, e.g. "R" → "Tikai ar R-karti" / "Only with R card". */
   loyaltyCard?: string;
 }
 
 export interface ShopType {
   id: ShopTypeId;
-  label: string;
+  /** Translation key, e.g. 'shopType.grocery' (texts in src/app/i18n/*.json). */
+  labelKey: string;
   icon: ShopTypeIcon;
 }
 
 export const SHOPS: ShopInfo[] = [
-  { id: 1, name: 'R-shop', type: 'grocery', color: '#b70f15', loyaltyCard: 'R-karti' },
-  { id: 2, name: 'M-shop', type: 'grocery', color: '#1b458f', loyaltyCard: 'M-karti' },
+  { id: 1, name: 'R-shop', type: 'grocery', color: '#b70f15', loyaltyCard: 'R' },
+  { id: 2, name: 'M-shop', type: 'grocery', color: '#1b458f', loyaltyCard: 'M' },
   { id: 10, name: 'S&V-shop', type: 'spirit', color: '#e53011' },
   { id: 11, name: 'LB-shop', type: 'spirit', color: '#f29300', ink: '#1a1206' },
   { id: 12, name: 'V-shop', type: 'spirit', color: '#862149' },
@@ -42,9 +44,9 @@ export const SHOPS: ShopInfo[] = [
 ];
 
 export const SHOP_TYPES: ShopType[] = [
-  { id: 'grocery', label: 'Pārtika', icon: 'basket' },
-  { id: 'spirit', label: 'Alkohols', icon: 'bottle' },
-  // { id: 'pharmacy', label: 'Aptiekas', icon: 'pill' },
+  { id: 'grocery', labelKey: 'shopType.grocery', icon: 'basket' },
+  { id: 'spirit', labelKey: 'shopType.spirit', icon: 'bottle' },
+  // { id: 'pharmacy', labelKey: 'shopType.pharmacy', icon: 'pill' },
 ];
 
 const FALLBACK_SHOP_COLOR = '#6e6175';

@@ -1,5 +1,6 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
+import CATEGORY_NAMES from './category-names.json';
 
 export type LanguageCode = 'lv' | 'en' | 'ru';
 
@@ -19,6 +20,10 @@ export const LANGUAGES: Language[] = [
 
 export const DEFAULT_LANGUAGE: LanguageCode = 'lv';
 const STORAGE_KEY = 'lang';
+
+/** English and Russian names for categories, keyed by the Latvian name the API sends. */
+const CATEGORY_TRANSLATIONS: Record<string, Partial<Record<LanguageCode, string>>> =
+  CATEGORY_NAMES;
 
 /** Current UI language: remembered choice, else the browser's language, else Latvian. */
 @Injectable({ providedIn: 'root' })
@@ -49,6 +54,18 @@ export class LanguageService {
     return text === formKey
       ? this.translate.instant(`${key}.other`, { count })
       : text;
+  }
+
+  /**
+   * A category's name in the current language. Categories come from the API in
+   * Latvian; one without a translation in category-names.json stays in Latvian.
+   */
+  categoryName(name: string): string {
+    const language = this.current();
+    if (language === 'lv') {
+      return name;
+    }
+    return CATEGORY_TRANSLATIONS[name.trim()]?.[language] ?? name;
   }
 
   private apply(code: LanguageCode): void {

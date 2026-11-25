@@ -2,6 +2,7 @@ import { Component, EventEmitter, Input, OnInit, Output, ChangeDetectionStrategy
 import { Router } from '@angular/router';
 import { first } from 'rxjs';
 import { categoryParams } from '../config/search-params';
+import { LanguageService } from '../i18n/language.service';
 import { CategoryDTO, ParentCategoryDTO } from '../models/category.dto';
 import { CategoryService } from '../services/category.service';
 import { ProductsService } from '../services/products.service';
@@ -29,7 +30,8 @@ export class CategoryNavComponent implements OnInit {
   constructor(
     private categoryService: CategoryService,
     private productService: ProductsService,
-    private router: Router
+    private router: Router,
+    public lang: LanguageService
   ) {}
 
   ngOnInit(): void {

@@ -21,7 +21,7 @@
       [attr.aria-expanded]="hasChildren(category) ? isExpanded(category) : null"
       (click)="toggle(category)"
       >
-      <span class="flex-1">{{ category.name }}</span>
+      <span class="flex-1">{{ lang.categoryName(category.name) }}</span>
       @if (isSale(category)) {
         <span
           class="badge badge-secondary h-5 border-0 px-2 text-[11px] font-bold"
@@ -47,7 +47,7 @@
               [attr.aria-current]="sub.id === (activeId$ | async) ? 'true' : null"
               (click)="select(sub)"
               >
-              {{ sub.name }}
+              {{ lang.categoryName(sub.name) }}
             </button>
           }
         </div>

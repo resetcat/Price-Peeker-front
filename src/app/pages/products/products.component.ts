@@ -217,8 +217,10 @@ export class ProductsComponent implements OnInit, OnDestroy {
       .pipe(first())
       .subscribe({
         next: (categories) => {
+          // Only subcategories open a results page, and main categories reuse
+          // the same ids (main category 1 is not subcategory 1).
           const name = categories
-            .flatMap((parent) => [parent, ...(parent.categories ?? [])])
+            .flatMap((parent) => parent.categories ?? [])
             .find((category) => category.id === id)?.name;
           const stillShowing =
             this.productService.currentKey?.startsWith(`category:${id}:`) ?? false;

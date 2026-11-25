@@ -35,7 +35,7 @@
               @if (context.kind === 'search') {
                 {{ 'results.searchTitle' | translate: { query: context.label } }}
               } @else {
-                {{ context.label }}
+                {{ lang.categoryName(context.label) }}
               }
             </h1>
             <p class="mt-0.5 text-[13px] text-muted lg:mt-1 lg:text-sm">{{ resultSummary }}</p>

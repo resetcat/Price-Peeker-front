@@ -2,7 +2,11 @@
 //  - every language has the same keys as lv.json (plural groups may differ per language)
 //  - every {{placeholder}} in Latvian also appears in the translation
 //  - every key used in the app's templates and code exists in lv.json
+//  - every category in category-names.json has an English and a Russian name
 // Run: npm run i18n:check
+//
+// npm run i18n:categories also loads the categories the live site serves and
+// lists any without a translation (add --categories=<url> to use another API).
 import { readFileSync, readdirSync, statSync } from 'node:fs';
 import { join } from 'node:path';
 
@@ -49,6 +53,47 @@ for (const lang of LANGS) {
   }
 }
 
+// Category names: Latvian name as the API sends it → { en, ru }.
+const CATEGORY_FILE = join(I18N_DIR, 'category-names.json');
+const CATEGORY_LANGS = LANGS.filter((lang) => lang !== SOURCE);
+const categoryText = readFileSync(CATEGORY_FILE, 'utf8');
+const categoryNames = JSON.parse(categoryText);
+const seenCategories = new Set();
+for (const [, name] of categoryText.matchAll(/^\s*"([^"]+)"\s*:\s*\{/gm)) {
+  if (seenCategories.has(name)) problems.push(`category-names.json: "${name}" is listed twice`);
+  seenCategories.add(name);
+}
+for (const [name, names] of Object.entries(categoryNames)) {
+  if (name !== name.trim()) problems.push(`category-names.json: "${name}" has spaces at the start or end`);
+  for (const lang of CATEGORY_LANGS)
+    if (typeof names[lang] !== 'string' || !names[lang].trim())
+      problems.push(`category-names.json: "${name}" needs a "${lang}" name`);
+  for (const lang of Object.keys(names))
+    if (!CATEGORY_LANGS.includes(lang)) problems.push(`category-names.json: "${name}" has an unknown language "${lang}"`);
+}
+
+// --categories: compare with the categories the live site serves.
+const liveArg = process.argv.find((arg) => arg.startsWith('--categories'));
+let liveSummary = '';
+if (liveArg) {
+  const url = liveArg.includes('=') ? liveArg.slice(liveArg.indexOf('=') + 1) : 'https://pricepeeker.lv/api/allCategories';
+  let parents;
+  try {
+    const response = await fetch(url);
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    parents = await response.json();
+  } catch (error) {
+    console.error(`Couldn't load categories from ${url}: ${error.message}`);
+    process.exit(1);
+  }
+  const live = new Set(parents.flatMap((parent) => [parent, ...(parent.categories ?? [])]).map((c) => c.name.trim()));
+  for (const name of live)
+    if (!(name in categoryNames)) problems.push(`category "${name}" from ${url} has no translation in category-names.json`);
+  const unused = Object.keys(categoryNames).filter((name) => !live.has(name));
+  if (unused.length) console.warn(`In category-names.json but no longer on the site (safe to delete):\n - ${unused.join('\n - ')}`);
+  liveSummary = ` All ${live.size} categories from ${url} are translated.`;
+}
+
 // Keys referenced in the app: 'some.key' | translate, labelKey: 'x.y', errorKey = 'x.y', plural('x.y', …), instant('x.y' …)
 function walk(dir, files = []) {
   for (const name of readdirSync(dir)) {
@@ -80,4 +125,7 @@ if (problems.length) {
   console.error(`i18n check failed (${problems.length}):\n - ` + problems.join('\n - '));
   process.exit(1);
 }
-console.log(`i18n check passed: ${Object.keys(source).length} keys in ${LANGS.join(', ')}; ${used.size} keys used in the app.`);
+console.log(
+  `i18n check passed: ${Object.keys(source).length} keys in ${LANGS.join(', ')}; ${used.size} keys used in the app; ` +
+    `${Object.keys(categoryNames).length} category names.${liveSummary}`,
+);
